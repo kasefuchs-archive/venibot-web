@@ -1,0 +1,18 @@
+{
+  "ru": [
+    {
+      "name": "цитата",
+      "description": "Вывод случайного сообщения из закреплённых",
+      "type": 1,
+      "key": "stock.command.citation"
+    }
+  ],
+  "en": [
+    {
+      "name": "citation",
+      "description": "Output of a random message from pinned",
+      "type": 1,
+      "key": "stock.command.citation"
+    }
+  ]
+}
