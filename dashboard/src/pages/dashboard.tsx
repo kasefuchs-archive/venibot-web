@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from "react";
+import React, {Component, ComponentClass, ReactNode} from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -25,16 +25,18 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { Drawer, LayoutBase, Loading, Shortcut } from "../components";
-import { Assignment, ExpandMore, Paid, Widgets } from "@mui/icons-material";
-import { AuthContext, ThemeContext } from "../context";
-import { dark, light } from "../components/layout/theme";
-import { isEqual } from "lodash";
-import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
+import {Drawer, LayoutBase, Loading, Shortcut} from "../components";
+import {Assignment, ExpandMore, Paid, Widgets} from "@mui/icons-material";
+import {AuthContext, ThemeContext} from "../context";
+import {dark, light} from "../components/layout/theme";
+import {isEqual} from "lodash";
+import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
+import {RouteComponentProps} from "react-router";
 import axios from "axios";
-import { Server } from "../interfaces";
-import { LoadingButton } from "@mui/lab";
+import {Server} from "../interfaces";
+import {LoadingButton} from "@mui/lab";
+import {compose} from "redux";
+import {TransProps, withTranslation} from "react-i18next";
 
 interface Config {
   command_locale: string;
@@ -60,12 +62,13 @@ interface State {
 type Path = {
   guild: string;
 };
+type Props = RouteComponentProps<Path> & TransProps<any>;
 
-class DashboardBase extends Component<RouteComponentProps<Path>, State> {
+class DashboardBase extends Component<Props, State> {
   static contextType = AuthContext;
   context!: React.ContextType<typeof AuthContext>;
 
-  constructor(props: RouteComponentProps<Path>) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       savingNow: false,
@@ -80,7 +83,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
   componentDidMount() {
     axios
       .get(new URL(`/timezones.json`, process.env.REACT_APP_API_URL).href)
-      .then(({ data }) => this.setState({ timezones: data }));
+      .then(({data}) => this.setState({timezones: data}));
     let repeats: number = 0;
     const authWaiter = setInterval(() => {
       if (++repeats === 15) clearInterval(authWaiter);
@@ -92,10 +95,10 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
               `/servers/${this.props.match.params.guild}/config`,
               process.env.REACT_APP_API_URL
             ).href,
-            { headers: { Authorization: this.context.token?.raw as string } }
+            {headers: {Authorization: this.context.token?.raw as string}}
           )
-          .then(({ data }) =>
-            this.setState({ config: { new_data: data, old_data: data } })
+          .then(({data}) =>
+            this.setState({config: {new_data: data, old_data: data}})
           );
         axios
           .get(
@@ -103,20 +106,21 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
               `/servers/${this.props.match.params.guild}`,
               process.env.REACT_APP_API_URL
             ).href,
-            { headers: { Authorization: this.context.token?.raw as string } }
+            {headers: {Authorization: this.context.token?.raw as string}}
           )
-          .then(({ data }) => this.setState({ guild: data }));
+          .then(({data}) => this.setState({guild: data}));
       }
     }, 1000);
   }
 
   render(): ReactNode {
+    const t = this.props.t!;
     const loadingComplete: boolean = Boolean(
       this.state.config.new_data && this.state.timezones && this.state.guild
     );
     return (
       <ThemeContext.Consumer>
-        {({ theme }) => (
+        {({theme}) => (
           <LayoutBase>
             <Drawer variant="permanent">
               <Toolbar
@@ -131,22 +135,22 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                 <Collapse in={loadingComplete}>
                   <ListItem
                     button
-                    sx={{ pl: "12px", pt: "6px" }}
+                    sx={{pl: "12px", pt: "6px"}}
                     component={Link}
                     to={"/servers"}
                   >
                     <ListItemIcon>
                       <Avatar
-                        sx={{ width: 32, height: 32 }}
+                        sx={{width: 32, height: 32}}
                         src={
                           this.state.guild?.icon
                             ? `https://cdn.discordapp.com/icons/${
-                                this.state.guild?.id
-                              }/${this.state.guild?.icon}.${
-                                this.state.guild?.icon.startsWith("a_")
-                                  ? "gif"
-                                  : "png"
-                              }?size=32`
+                              this.state.guild?.id
+                            }/${this.state.guild?.icon}.${
+                              this.state.guild?.icon.startsWith("a_")
+                                ? "gif"
+                                : "png"
+                            }?size=32`
                             : undefined
                         }
                         variant="rounded"
@@ -155,35 +159,35 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                           ? this.state.guild.name.split(" ").length === 1
                             ? this.state.guild.name.split(" ")[0][0]
                             : this.state.guild.name.split(" ")[0][0] +
-                              this.state.guild.name.split(" ")[1][0]
+                            this.state.guild.name.split(" ")[1][0]
                           : undefined}
                       </Avatar>
                     </ListItemIcon>
-                    <ListItemText primary={this.state.guild?.name} />
+                    <ListItemText primary={this.state.guild?.name}/>
                   </ListItem>
-                  <Divider sx={{ my: 0.5 }} />
+                  <Divider sx={{my: 0.5}}/>
                 </Collapse>
                 <Shortcut.ListTab
                   targetValue={`${this.props.match.url}/common`}
                   currentValue={this.props.location.pathname}
-                  icon={<Widgets />}
+                  icon={<Widgets/>}
                   disabled={!loadingComplete}
-                  label={"Общее"}
+                  label={t('tabs.common')}
                 />
                 <Shortcut.ListTab
                   targetValue={`${this.props.match.url}/audit`}
-                  tooltip={"Будет в ближайшем обновлении!"}
+                  tooltip={t('tabs.comingSoon')}
                   currentValue={this.props.location.pathname}
                   disabled
-                  icon={<Assignment />}
-                  label={"Аудит"}
+                  icon={<Assignment/>}
+                  label={t('tabs.audit')}
                 />
                 <Shortcut.ListTab
                   targetValue={`${this.props.match.url}/economy`}
                   currentValue={this.props.location.pathname}
-                  tooltip={"Будет в ближайшем обновлении!"}
-                  icon={<Paid />}
-                  label={"Экономика"}
+                  tooltip={t('tabs.comingSoon')}
+                  icon={<Paid/>}
+                  label={t('tabs.economy')}
                   disabled
                 />
               </List>
@@ -204,10 +208,10 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                 minHeight: "100vh",
               }}
             >
-              <Toolbar />
+              <Toolbar/>
               <Loading value={loadingComplete}>
-                <Container maxWidth={"xl"} sx={{ px: 0 }}>
-                  <Box sx={{ p: "12px", mt: 1 }}>
+                <Container maxWidth={"xl"} sx={{px: 0}}>
+                  <Box sx={{p: "12px", mt: 1}}>
                     <Switch>
                       <Redirect
                         from={`/dashboard/:guild/`}
@@ -216,19 +220,19 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                       />
                       <Route path={`${this.props.match.url}/common`}>
                         <Accordion defaultExpanded>
-                          <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography>Основное</Typography>
+                          <AccordionSummary expandIcon={<ExpandMore/>}>
+                            <Typography>{t('common.basic.title')}</Typography>
                           </AccordionSummary>
                           <AccordionDetails>
                             <Grid container spacing={2}>
                               <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
                                   <InputLabel id="interface-language-select-label">
-                                    Язык интерфейса бота
+                                    {t('common.basic.interfaceLanguage')}
                                   </InputLabel>
                                   <Select
                                     labelId="interface-language-select-label"
-                                    label="Язык интерфейса бота"
+                                    label={t('common.basic.interfaceLanguage')}
                                     value={this.state.config.new_data?.locale}
                                     onChange={(event: SelectChangeEvent) =>
                                       this.updateConfig({
@@ -236,19 +240,19 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                                       })
                                     }
                                   >
-                                    <MenuItem value={"ru"}>Русский</MenuItem>
-                                    <MenuItem value={"en"}>Английский</MenuItem>
+                                    <MenuItem value={"ru"}>{t('meta:languages.ru')}</MenuItem>
+                                    <MenuItem value={"en"}>{t('meta:languages.en-US')}</MenuItem>
                                   </Select>
                                 </FormControl>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
                                   <InputLabel id="commands-language-select-label">
-                                    Язык команд бота
+                                    {t('common.basic.commandLanguage')}
                                   </InputLabel>
                                   <Select
                                     labelId="commands-language-select-label"
-                                    label="Язык команд бота"
+                                    label={t('common.basic.commandLanguage')}
                                     onChange={(event: SelectChangeEvent) =>
                                       this.updateConfig({
                                         command_locale: event.target.value,
@@ -258,19 +262,19 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                                       this.state.config.new_data?.command_locale
                                     }
                                   >
-                                    <MenuItem value={"ru"}>Русский</MenuItem>
-                                    <MenuItem value={"en"}>Английский</MenuItem>
+                                    <MenuItem value={"ru"}>{t('meta:languages.ru')}</MenuItem>
+                                    <MenuItem value={"en"}>{t('meta:languages.en-US')}</MenuItem>
                                   </Select>
                                 </FormControl>
                               </Grid>
                               <Grid item xs={12}>
-                                <FormControl fullWidth sx={{ maxHeight: 120 }}>
+                                <FormControl fullWidth sx={{maxHeight: 120}}>
                                   <InputLabel id="commands-language-select-label">
-                                    Часовой пояс сервера
+                                    {t('common.basic.timezone')}
                                   </InputLabel>
                                   <Select
                                     labelId="commands-language-select-label"
-                                    label="Часовой пояс сервера"
+                                    label={t('common.basic.timezone')}
                                     value={this.state.config.new_data?.timezone}
                                     onChange={(event: SelectChangeEvent) =>
                                       this.updateConfig({
@@ -279,7 +283,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                                     }
                                     MenuProps={{
                                       PaperProps: {
-                                        sx: { maxHeight: "200px" },
+                                        sx: {maxHeight: "200px"},
                                       },
                                     }}
                                   >
@@ -287,7 +291,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                                       ?.sort((a, b) =>
                                         Number(a.offset > b.offset)
                                       )
-                                      .map(({ name, value }) => (
+                                      .map(({name, value}) => (
                                         <MenuItem key={value} value={value}>
                                           {name}
                                         </MenuItem>
@@ -311,7 +315,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                           this.state.config.new_data
                         )
                       }
-                      message={"Аккуратнее, вы не сохранили изменения!"}
+                      message={t('snackbar.save.message')}
                       anchorOrigin={{
                         horizontal: "center",
                         vertical: "bottom",
@@ -327,7 +331,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                               }
                               disabled={this.state.savingNow}
                             >
-                              Сброс
+                              {t('snackbar.save.reset')}
                             </Button>
                             <LoadingButton
                               loading={this.state.savingNow}
@@ -335,7 +339,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
                               size="small"
                               onClick={() => this.saveConfig()}
                             >
-                              Сохранить
+                              {t('snackbar.save.save')}
                             </LoadingButton>
                           </Stack>
                         </ThemeProvider>
@@ -361,7 +365,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
   }
 
   private saveConfig() {
-    this.setState({ savingNow: true });
+    this.setState({savingNow: true});
     axios
       .patch(
         new URL(
@@ -369,7 +373,7 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
           process.env.REACT_APP_API_URL
         ).href,
         this.state.config,
-        { headers: { Authorization: this.context.token?.raw as string } }
+        {headers: {Authorization: this.context.token?.raw as string}}
       )
       .then(() => {
         this.setState({
@@ -380,8 +384,8 @@ class DashboardBase extends Component<RouteComponentProps<Path>, State> {
           savingNow: false,
         });
       })
-      .catch(() => this.setState({ savingNow: false }));
+      .catch(() => this.setState({savingNow: false}));
   }
 }
 
-export const Dashboard = withRouter(DashboardBase);
+export const Dashboard = compose(withRouter, withTranslation(["pages/dashboard", "meta"]))(DashboardBase) as ComponentClass;

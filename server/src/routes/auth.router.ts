@@ -22,13 +22,11 @@ export default class implements RouteGroup {
     this.router.get(
       "/callback",
       passport.authenticate("discord", { failureRedirect: "/auth/" }),
-      (req: Request, res: Response) =>
-        res.redirect(
-          `${config.frontendURI}callback?token=${sign(
-            { accessToken: (req.user as AuthProfile).accessToken },
-            config.session.secret as string
-          )}`
-        )
+      (req: Request, res: Response) => {
+        const link = new URL('/callback', config.frontendURI);
+        link.searchParams.append('token', sign({ accessToken: (req.user as AuthProfile).accessToken }, config.session.secret as string));
+        res.redirect(link.toString());
+      }
     );
     this.router.get("/add", (req: Request, res: Response) => {
       const { guild } = req.query;

@@ -1,5 +1,5 @@
 import * as Pages from "./pages";
-import MarkdownRenderer, { cookies, privacy, tos } from "./pages/markdown";
+import MarkdownRenderer from "./pages/markdown";
 
 export interface Route {
   path: string;
@@ -17,15 +17,15 @@ const routes: Array<Route> = [
   },
   {
     path: "/tos",
-    Component: <MarkdownRenderer path={tos} />,
+    Component: <MarkdownRenderer file={'tos'} />,
   },
   {
     path: "/privacy",
-    Component: <MarkdownRenderer path={privacy} />,
+    Component: <MarkdownRenderer file={'privacy'} />,
   },
   {
     path: "/cookies",
-    Component: <MarkdownRenderer path={cookies} />,
+    Component: <MarkdownRenderer file={'cookies'} />,
   },
   {
     path: "/callback",

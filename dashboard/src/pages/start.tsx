@@ -1,35 +1,13 @@
-import React, {
-  Component,
-  createRef,
-  Fragment,
-  MutableRefObject,
-  ReactNode,
-} from "react";
-import { Layout, Loading } from "../components";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { AuthContext } from "../context";
-import { Link } from "react-router-dom";
+import React, {Component, createRef, Fragment, MutableRefObject, ReactNode,} from "react";
+import {Layout, Loading} from "../components";
+import {Box, Button, Container, Divider, Grid, Paper, Stack, Typography,} from "@mui/material";
+import {AuthContext} from "../context";
+import {Link} from "react-router-dom";
 import axios from "axios";
-import {
-  Group,
-  Layers,
-  Security,
-  Settings,
-  Speaker,
-  Widgets,
-} from "@mui/icons-material";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import plural from "plural-ru";
+import {Group, Layers, Security, Settings, Speaker, Widgets,} from "@mui/icons-material";
+import {faDiscord} from "@fortawesome/free-brands-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {TransProps, withTranslation} from 'react-i18next';
 
 interface State {
   stats?: {
@@ -38,38 +16,8 @@ interface State {
   };
 }
 
-const featuresCard: Array<{
-  name: string;
-  description: string;
-  Icon: any;
-}> = [
-  {
-    name: "Музыка",
-    description:
-      "Удобная в использовании музыка точно не даст вам заскучать и станет отличной заменой другим музыкальным ботам",
-    Icon: Speaker,
-  },
-  {
-    name: "Утилиты",
-    description:
-      "Используйте утилиты, встроенные в бота, чтобы быстро и удобно выполнять различные задачи и получать необходимую информацию",
-    Icon: Widgets,
-  },
-  {
-    name: "Автомодерация",
-    description:
-      "Настройте автомодерацию один раз и отдыхайте. Она накажет всех нарушителей, если вы будете заняты!",
-    Icon: Security,
-  },
-  {
-    name: "Настройки",
-    description:
-      "Настраивайте всё, что только захотите, начиная от префикса и заканчивая приветствиями и прощаниями участников",
-    Icon: Settings,
-  },
-];
 
-export class Start extends Component<any, State> {
+class StartBase extends Component<TransProps<any>, State> {
   private featuresRef: MutableRefObject<HTMLDivElement> =
     createRef() as MutableRefObject<HTMLDivElement>;
 
@@ -81,7 +29,7 @@ export class Start extends Component<any, State> {
   componentDidMount() {
     axios
       .get(new URL("/stats", process.env.REACT_APP_API_URL).href)
-      .then(({ data }) =>
+      .then(({data}) =>
         this.setState({
           stats: data,
         })
@@ -89,6 +37,34 @@ export class Start extends Component<any, State> {
   }
 
   render(): ReactNode {
+    const t = this.props.t!;
+    const featuresCard: Array<{
+      name: string;
+      description: string;
+      Icon: any;
+    }> = [
+      {
+        name: t('cards.music.title'),
+        description: t('cards.music.description'),
+        Icon: Speaker,
+      },
+      {
+        name: t('cards.utils.title'),
+        description: t('cards.utils.description'),
+        Icon: Widgets,
+      },
+      {
+        name: t('cards.auto-moderation.title'),
+        description: t('cards.auto-moderation.description'),
+        Icon: Security,
+      },
+      {
+        name: t('cards.settings.title'),
+        description: t('cards.settings.description'),
+        Icon: Settings,
+      },
+    ];
+    (window as any).tr = t;
     return (
       <Layout>
         <Loading value={this.state.stats}>
@@ -118,14 +94,14 @@ export class Start extends Component<any, State> {
                 >
                   VeniBot
                 </Typography>
-                <Divider sx={{ mb: 1.5 }} />
+                <Divider sx={{mb: 1.5}}/>
                 <Typography
                   variant="h6"
                   align="center"
                   color="text.secondary"
                   paragraph
                 >
-                  Многофункциональный Discord-бот для вашего сервера
+                  {t('description')}
                 </Typography>
                 <Grid
                   spacing={2}
@@ -137,23 +113,23 @@ export class Start extends Component<any, State> {
                     <Button
                       variant="contained"
                       href={`${process.env.REACT_APP_API_URL}/auth/add`}
-                      startIcon={<FontAwesomeIcon icon={faDiscord} />}
+                      startIcon={<FontAwesomeIcon icon={faDiscord}/>}
                     >
-                      Добавить в Discord
+                      {t('buttons.add')}
                     </Button>
                   </Grid>
                   <Grid item>
                     <AuthContext.Consumer>
-                      {({ user }) =>
+                      {({user}) =>
                         user ? (
                           <Button
                             variant="outlined"
                             component={Link}
                             to={"/servers/"}
                             color="secondary"
-                            startIcon={<Layers />}
+                            startIcon={<Layers/>}
                           >
-                            Мои серверы
+                            {t('buttons.myServers')}
                           </Button>
                         ) : (
                           <Button
@@ -165,7 +141,7 @@ export class Start extends Component<any, State> {
                               })
                             }
                           >
-                            Подробнее
+                            {t('buttons.details')}
                           </Button>
                         )
                       }
@@ -185,11 +161,12 @@ export class Start extends Component<any, State> {
                 viewBox="0 0 1200 120"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M321.39 56.44c58-10.79 114.16-30.13 172-41.86 82.39-16.72 168.19-17.73 250.45-.39C823.78 31 906.67 72 985.66 92.83c70.05 18.48 146.53 26.09 214.34 3V0H0v27.35a600.21 600.21 0 00321.39 29.09z" />
+                <path
+                  d="M321.39 56.44c58-10.79 114.16-30.13 172-41.86 82.39-16.72 168.19-17.73 250.45-.39C823.78 31 906.67 72 985.66 92.83c70.05 18.48 146.53 26.09 214.34 3V0H0v27.35a600.21 600.21 0 00321.39 29.09z"/>
               </svg>
             </Box>
             <Container
-              sx={{ zIndex: 1, pb: 4 }}
+              sx={{zIndex: 1, pb: 4}}
               maxWidth="md"
               ref={this.featuresRef}
             >
@@ -202,12 +179,12 @@ export class Start extends Component<any, State> {
                   pb: 2,
                 }}
               >
-                Что-же умеет VeniBot?
+                {t('featuresTitle')}
               </Typography>
               <Box>
                 <Grid container>
-                  {featuresCard.map(({ name, description, Icon }, key) => (
-                    <Grid item sx={{ py: 1 }} xs={12} key={key}>
+                  {featuresCard.map(({name, description, Icon}, key) => (
+                    <Grid item sx={{py: 1}} xs={12} key={key}>
                       <Paper elevation={4}>
                         <Grid
                           container
@@ -222,17 +199,17 @@ export class Start extends Component<any, State> {
                             xs={12}
                             sm={12}
                             md={9}
-                            sx={{ my: 2, px: 2 }}
+                            sx={{my: 2, px: 2}}
                           >
                             <Typography>
                               <b>{name}</b>
                             </Typography>
-                            <Typography>{description}</Typography>
+                            <Typography sx={{mt: 1}}>{description}</Typography>
                           </Grid>
                           <Grid
                             item
                             xs={3}
-                            sx={{ display: { xs: "none", md: "block" } }}
+                            sx={{display: {xs: "none", md: "block"}}}
                           >
                             <Icon
                               sx={{
@@ -257,7 +234,7 @@ export class Start extends Component<any, State> {
                   py: 2,
                 }}
               >
-                Мы растём!
+                {t('stats.title')}
               </Typography>
               <Box>
                 <Grid container>
@@ -278,12 +255,7 @@ export class Start extends Component<any, State> {
                         {this.state.stats?.guildCount}
                       </Typography>
                       <Typography variant={"h6"}>
-                        {plural(
-                          this.state.stats?.guildCount!,
-                          "сервер",
-                          "сервера",
-                          "серверов"
-                        )}
+                        {t('stats.guilds', {count: this.state.stats?.guildCount})}
                       </Typography>
                     </Stack>
                   </Grid>
@@ -304,12 +276,7 @@ export class Start extends Component<any, State> {
                         {this.state.stats?.userCount}
                       </Typography>
                       <Typography variant={"h6"}>
-                        {plural(
-                          this.state.stats?.userCount!,
-                          "пользователь",
-                          "пользователя",
-                          "пользователей"
-                        )}
+                        {t('stats.users', {count: Number(this.state.stats?.userCount)})}
                       </Typography>
                     </Stack>
                   </Grid>
@@ -324,7 +291,7 @@ export class Start extends Component<any, State> {
                   py: 3,
                 }}
               >
-                ...и вы можете помочь нам!
+                {t('addBotTitle')}
               </Typography>
               <Box
                 sx={{
@@ -334,9 +301,9 @@ export class Start extends Component<any, State> {
                 <Button
                   variant="contained"
                   href={`${process.env.REACT_APP_API_URL}/auth/add`}
-                  startIcon={<FontAwesomeIcon icon={faDiscord} />}
+                  startIcon={<FontAwesomeIcon icon={faDiscord}/>}
                 >
-                  Добавить в Discord
+                  {t('buttons.add')}
                 </Button>
               </Box>
             </Container>
@@ -346,3 +313,5 @@ export class Start extends Component<any, State> {
     );
   }
 }
+
+export const Start = withTranslation("pages/start")(StartBase);

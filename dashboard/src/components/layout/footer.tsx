@@ -5,22 +5,42 @@ import {
   Button,
   Container,
   Grid,
+  IconButton,
   Link,
+  ListItemButton,
+  ListSubheader,
+  Menu,
   Stack,
   Typography,
 } from "@mui/material";
-import {
-  Link as RouterLink,
-  RouteComponentProps,
-  withRouter,
-} from "react-router-dom";
-import { Component, ReactNode } from "react";
+import {Link as RouterLink, RouteComponentProps, withRouter,} from "react-router-dom";
+import {compose} from "redux";
+import {Component, ComponentClass, Fragment, ReactNode} from "react";
+import {TransProps, withTranslation} from "react-i18next";
+import {DarkMode, LightMode, Translate} from "@mui/icons-material";
+import {ThemeContext} from '../../context';
 
-class FooterBase extends Component<RouteComponentProps> {
+type Props = RouteComponentProps & TransProps<any>;
+
+interface State {
+  localeMenuAnchor: null | HTMLElement;
+}
+
+class FooterBase extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      localeMenuAnchor: null
+    }
+  }
+
   render(): ReactNode {
+    const t = this.props.t!;
+    const i18n = this.props.i18n!;
+
     return (
-      <AppBar position="relative" component="footer" sx={{ mt: "auto" }}>
-        <Container sx={{ p: 2 }} maxWidth={"lg"}>
+      <AppBar position="relative" component="footer" sx={{mt: "auto"}}>
+        <Container sx={{p: 2}} maxWidth={"lg"}>
           <Grid container>
             <Grid
               item
@@ -34,12 +54,12 @@ class FooterBase extends Component<RouteComponentProps> {
               }}
             >
               <Button color={"inherit"} component={RouterLink} to={"/"}>
-                <Avatar sx={{ mr: ".5rem" }} src={"/logo192.png"} />
+                <Avatar sx={{mr: ".5rem"}} src={"/logo192.png"}/>
                 <Typography
                   variant="h5"
                   color="inherit"
                   noWrap
-                  sx={{ textTransform: "none" }}
+                  sx={{textTransform: "none"}}
                 >
                   VeniBot
                 </Typography>
@@ -52,32 +72,32 @@ class FooterBase extends Component<RouteComponentProps> {
                     <Link
                       underline={"none"}
                       component={RouterLink}
-                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      sx={{"&:hover": {opacity: 0.7}}}
                       to={"/tos"}
                       variant="body2"
                       color={"inherit"}
                     >
-                      Условия использования
+                      {t('tos')}
                     </Link>
                     <Link
                       underline={"none"}
                       component={RouterLink}
-                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      sx={{"&:hover": {opacity: 0.7}}}
                       to={"/privacy"}
                       variant="body2"
                       color={"inherit"}
                     >
-                      Политика конфиденциальности
+                      {t('privacy')}
                     </Link>
                     <Link
                       underline={"none"}
                       component={RouterLink}
-                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      sx={{"&:hover": {opacity: 0.7}}}
                       to={"/cookies"}
                       variant="body2"
                       color={"inherit"}
                     >
-                      Использование куки фаилов
+                      {t('cookies')}
                     </Link>
                   </Stack>
                 </Grid>
@@ -85,7 +105,7 @@ class FooterBase extends Component<RouteComponentProps> {
                   <Stack>
                     <Link
                       underline={"none"}
-                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      sx={{"&:hover": {opacity: 0.7}}}
                       href={
                         new URL("/auth/support", process.env.REACT_APP_API_URL)
                           .href
@@ -93,20 +113,20 @@ class FooterBase extends Component<RouteComponentProps> {
                       variant="body2"
                       color={"inherit"}
                     >
-                      Сервер поддержки
+                      {t('supportServer')}
                     </Link>
                     <Link
                       underline={"none"}
-                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      sx={{"&:hover": {opacity: 0.7}}}
                       href={process.env.REACT_APP_DOCS_URL}
                       variant="body2"
                       color={"inherit"}
                     >
-                      Документация
+                      {t('docs')}
                     </Link>
                     <Link
                       underline={"none"}
-                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      sx={{"&:hover": {opacity: 0.7}}}
                       href={process.env.REACT_APP_KARASIQ_URL}
                       variant="body2"
                       color={"inherit"}
@@ -115,14 +135,58 @@ class FooterBase extends Component<RouteComponentProps> {
                     </Link>
                   </Stack>
                 </Grid>
+                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center'}}>
+                  <Box sx={{
+                    margin: 'auto'
+                  }}>
+                    <ThemeContext.Consumer>
+                      {({theme}) => (
+                        <Stack>
+
+                          <IconButton onClick={({currentTarget}) => this.setState({localeMenuAnchor: currentTarget})}>
+                            <Translate/>
+                          </IconButton>
+
+                          <Menu
+                            anchorEl={this.state.localeMenuAnchor}
+                            keepMounted
+                            open={Boolean(this.state.localeMenuAnchor)}
+                            onClose={() => this.setState({localeMenuAnchor: null})}
+                            onClick={() => this.setState({localeMenuAnchor: null})}
+                            transformOrigin={{horizontal: "right", vertical: "top"}}
+                            anchorOrigin={{horizontal: "right", vertical: "bottom"}}
+                            MenuListProps={{sx: {py: 0}}}
+                          >
+                            <ListSubheader>{t('editLocale')}</ListSubheader>
+                            {['en-US', 'ru'].map(lang => (<ListItemButton selected={i18n.language === lang} key={lang}
+                                                             onClick={() => i18n.changeLanguage(lang)}>{t(`meta:languages.${lang}`)}</ListItemButton>))}
+                          </Menu>
+                          <Fragment>
+                            <IconButton
+                              onClick={({currentTarget}) => {
+                                this.setState({localeMenuAnchor: currentTarget});
+                                this.forceUpdate();
+                              }}
+                              disabled>
+                              {theme.palette.mode === 'dark' ? <DarkMode/> : <LightMode/>}
+                            </IconButton>
+                          </Fragment>
+
+                        </Stack>
+                      )}
+                    </ThemeContext.Consumer>
+
+
+                  </Box>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Box sx={{ textAlign: "center", pt: 0.5 }}>
+          <Box sx={{textAlign: "center", pt: 0.5}}>
             <Typography variant={"caption"}>
-              © 2020-{new Date().getFullYear()} — dmemsm & Kasefuchs | Все права
-              защищены
+              {t('copyright', {year: new Date().getFullYear()})}
             </Typography>
+
           </Box>
         </Container>
       </AppBar>
@@ -130,4 +194,4 @@ class FooterBase extends Component<RouteComponentProps> {
   }
 }
 
-export const Footer = withRouter(FooterBase);
+export const Footer = compose(withRouter, withTranslation(["components/footer", "meta"]))(FooterBase) as ComponentClass;

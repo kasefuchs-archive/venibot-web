@@ -1,0 +1,23 @@
+{
+  "tabs": {
+    "common": "Common",
+    "audit": "Audit",
+    "economy": "Economy",
+    "comingSoon": "Coming Soon!"
+  },
+  "common": {
+    "basic": {
+      "title": "Main",
+      "interfaceLanguage": "Interface Language",
+      "commandLanguage": "Command Language",
+      "timezone": "Server Timezone"
+    }
+  },
+  "snackbar": {
+    "save": {
+      "message": "Careful — you have unsaved changes!",
+      "reset": "Reset",
+      "save": "Save"
+    }
+  }
+}
