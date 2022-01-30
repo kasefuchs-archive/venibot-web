@@ -21,7 +21,7 @@ For the dashboard to work, you need:
 </ul>
 <h3>Copy the repository and navigate to the folder</h3>
 <pre>
-$ git clone https://gitea.nikitka.me/Kasefuchs/VeniBot-Dashboard.git
+$ git clone https://github.com/Kasefuchs/VeniBot-Dashboard.git
 $ cd VeniBot-Dashboard
 </pre>
 <h3>Install dependencies</h3>
@@ -49,34 +49,46 @@ $ cd server
  <tr>
    <td>MySQL or MariaDB</td>
    <td><a>mysql</a></td>
-   <td><code>yarn install mysql</code></td>
+   <td><code>yarn add mysql</code></td>
  </tr>
  <tr>
    <td>PostgreSQL or CockroachDB</td>
    <td><a>pg</a></td>
-   <td><code>yarn install pg</code></td>
+   <td><code>yarn add pg</code></td>
  </tr>
  <tr>
    <td>SQLite</td>
    <td><a>sqlite3</a></td>
-   <td><code>yarn install sqlite3</code></td>
+   <td><code>yarn add sqlite3</code></td>
  </tr>
  <tr>
    <td>Microsoft SQL Server</td>
    <td><a>mssql</a></td>
-   <td><code>yarn install mssql</code></td>
+   <td><code>yarn add mssql</code></td>
  </tr>
 <tr>
    <td>Oracle</td>
    <td><a>oracledb</a></td>
-   <td><code>yarn install oracledb</code></td>
+   <td><code>yarn add oracledb</code></td>
  </tr>
  <tr>
    <td>MongoDB</td>
    <td><a>mongodb</a></td>
-   <td><code>yarn install mongodb@^3.6.0</code></td>
+   <td><code>yarn add mongodb@^3.6.0</code></td>
  </tr>
 </table>
 
+<h3>Create dotenv files</h3>
+Rename `.env.example` in `dashboard` and `server` directories as `.env` and fill values
+<h3>Build<h3/>
+run `build` script in `dashboard` and `server` directories
+<h3>Finally run</h3>
+> use pm2 or run in different terminals
+> 
+just run `start` script in `dashboard` and `server` directories
 
-well, then I'm too lazy ¯\_(ツ)_/¯
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+VeniBot Dashboard is [AGPL-3.0 licensed](./LICENSE).
