@@ -79,12 +79,17 @@ $ cd server
 </table>
 
 <h3>Create dotenv files</h3>
+
 Rename `.env.example` in `dashboard` and `server` directories as `.env` and fill values
+
 <h3>Build<h3/>
+
 run `build` script in `dashboard` and `server` directories
+
 <h3>Finally run</h3>
+
 > use pm2 or run in different terminals
-> 
+
 just run `start` script in `dashboard` and `server` directories
 
 ## Contributing
