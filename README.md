@@ -82,7 +82,7 @@ $ cd server
 
 Rename `.env.example` in `dashboard` and `server` directories as `.env` and fill values
 
-<h3>Build<h3/>
+<h3>Build</h3>
 
 run `build` script in `dashboard` and `server` directories
 
