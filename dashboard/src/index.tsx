@@ -5,7 +5,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
-import './i18n';
+import "./i18n";
 import App from "./_app";
 
 if (process.env.NODE_ENV === "production") disableReactDevTools();

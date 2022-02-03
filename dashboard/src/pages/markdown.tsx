@@ -1,9 +1,9 @@
-import {Component, ReactNode} from "react";
-import {Layout, Loading} from "../components";
-import axios, {AxiosError} from "axios";
-import {Box, Container, Link, Typography} from "@mui/material";
+import { Component, ReactNode } from "react";
+import { Layout, Loading } from "../components";
+import axios, { AxiosError } from "axios";
+import { Box, Container, Link, Typography } from "@mui/material";
 import ReactMarkdown from "markdown-to-jsx";
-import {TransProps, withTranslation} from "react-i18next";
+import { TransProps, withTranslation } from "react-i18next";
 
 interface State {
   file?: string;
@@ -19,7 +19,7 @@ function MarkdownListItem(props: any) {
   return (
     <Box
       component="li"
-      sx={{mt: 0.5, typography: "body1", listStyleType: null}}
+      sx={{ mt: 0.5, typography: "body1", listStyleType: null }}
       {...props}
     />
   );
@@ -38,11 +38,11 @@ class MarkdownRenderer extends Component<Props, State> {
       },
       h2: {
         component: Typography,
-        props: {gutterBottom: true, variant: "h5", component: "h2"},
+        props: { gutterBottom: true, variant: "h5", component: "h2" },
       },
       h3: {
         component: Typography,
-        props: {gutterBottom: true, variant: "h6", component: "h3"},
+        props: { gutterBottom: true, variant: "h6", component: "h3" },
       },
       h4: {
         component: Typography,
@@ -101,13 +101,18 @@ class MarkdownRenderer extends Component<Props, State> {
     const locale = this.props.i18n?.language!;
     axios
       .get(`/locales/${locale}/markdown/${this.props.file}.md`)
-      .then(({data}) => this.setState({file: data})).catch((e: AxiosError) => {
-        if (e.response?.status === 404) this.props.i18n?.changeLanguage('en-US');
-      }
-    );
+      .then(({ data }) => this.setState({ file: data }))
+      .catch((e: AxiosError) => {
+        if (e.response?.status === 404)
+          this.props.i18n?.changeLanguage("en-US");
+      });
   }
 
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any) {
+  componentDidUpdate(
+    prevProps: Readonly<Props>,
+    prevState: Readonly<State>,
+    snapshot?: any
+  ) {
     if (this.props.t !== prevProps.t) this.componentDidMount();
   }
 
@@ -115,8 +120,8 @@ class MarkdownRenderer extends Component<Props, State> {
     return (
       <Layout>
         <Loading value={this.state.file}>
-          <Container sx={{py: 2}}>
-            <ReactMarkdown options={this.style} children={this.state.file!}/>
+          <Container sx={{ py: 2 }}>
+            <ReactMarkdown options={this.style} children={this.state.file!} />
           </Container>
         </Loading>
       </Layout>

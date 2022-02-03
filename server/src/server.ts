@@ -8,13 +8,16 @@ import passport from "passport";
 import session from "express-session";
 import { RouteGroup } from "./interface";
 import { Config } from "./interface/Config";
-import { Connection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
+import EventEmitter from "events";
+import banner from "./assets/banner.json";
 
-export class Server {
+export class Server extends EventEmitter {
   public app: Application;
   public orm?: Connection;
 
   constructor(public readonly config: Config) {
+    super();
     this.app = express();
     this.init();
   }
@@ -43,9 +46,13 @@ export class Server {
     if (this.config.server.environment === "development") {
       this.app.use(morgan("dev"));
       this.app.use(cors());
-    } else if (this.config.server.environment === "production")
+    } else if (this.config.server.environment === "production") {
       this.app.use(helmet());
-    this.app.use(express.static(__dirname + "/assets"));
+    }
+    this.app.use(
+      [/(.*)\.(js|ts)$/, "/assets"],
+      express.static(__dirname + "/assets")
+    );
     getFilesWithKeyword("router", __dirname + "/routes").forEach(
       (file: string) => {
         const { route, router }: RouteGroup = new (require(file).default)(
@@ -61,6 +68,22 @@ export class Server {
           message: err.message,
         });
       }
+    );
+    this.on("ready", async () => {
+      console.clear();
+      console.log(`\n${banner.join("\n")}\n`);
+      console.log(`Port       :: ${this.config.server.port}`);
+      console.log(`Database   :: ${this.config.orm.type}`);
+      console.log(`Evironment :: ${this.config.server.environment}`);
+    });
+  }
+
+  async start() {
+    this.orm = await createConnection(this.config.orm);
+    this.app.listen(
+      this.config.server.port || 8080,
+      this.config.server.hostname,
+      () => this.emit("ready")
     );
   }
 }

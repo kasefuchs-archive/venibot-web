@@ -1,16 +1,24 @@
 {
   "name": "@venibot/dashboard-server",
   "private": true,
-  "license": "MIT",
   "author": "Kasefuchs",
   "version": "0.0.1",
   "description": "VeniBot Dashboard Server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kasefuchs/VeniBot-Dashboard.git"
+  },
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Kasefuchs/VeniBot-Dashboard/issues"
+  },
+  "homepage": "https://github.com/Kasefuchs/VeniBot-Dashboard#readme",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
     "start": "node ./build/index.js",
     "dev": "ts-node --files ./src/index.ts",
-    "dev:nodemon": "nodemon -w src -e ts,json -x ts-node --files ./src/index.ts"
+    "dev:nodemon": "nodemon -w src -e ts,json -x npx ts-node --files ./src/index.ts"
   },
   "keywords": [
     "express",

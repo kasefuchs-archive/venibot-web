@@ -1,5 +1,4 @@
 import * as Pages from "./pages";
-import MarkdownRenderer from "./pages/markdown";
 
 export interface Route {
   path: string;
@@ -17,15 +16,15 @@ const routes: Array<Route> = [
   },
   {
     path: "/tos",
-    Component: <MarkdownRenderer file={'tos'} />,
+    Component: <Pages.MarkdownRenderer file={"tos"} />,
   },
   {
     path: "/privacy",
-    Component: <MarkdownRenderer file={'privacy'} />,
+    Component: <Pages.MarkdownRenderer file={"privacy"} />,
   },
   {
     path: "/cookies",
-    Component: <MarkdownRenderer file={'cookies'} />,
+    Component: <Pages.MarkdownRenderer file={"cookies"} />,
   },
   {
     path: "/callback",

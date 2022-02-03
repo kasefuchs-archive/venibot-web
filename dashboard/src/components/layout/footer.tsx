@@ -13,12 +13,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import {Link as RouterLink, RouteComponentProps, withRouter,} from "react-router-dom";
-import {compose} from "redux";
-import {Component, ComponentClass, Fragment, ReactNode} from "react";
-import {TransProps, withTranslation} from "react-i18next";
-import {DarkMode, LightMode, Translate} from "@mui/icons-material";
-import {ThemeContext} from '../../context';
+import {
+  Link as RouterLink,
+  RouteComponentProps,
+  withRouter,
+} from "react-router-dom";
+import { compose } from "redux";
+import { Component, ComponentClass, Fragment, ReactNode } from "react";
+import { TransProps, withTranslation } from "react-i18next";
+import { DarkMode, LightMode, Translate } from "@mui/icons-material";
+import { ThemeContext } from "../../context";
 
 type Props = RouteComponentProps & TransProps<any>;
 
@@ -30,8 +34,8 @@ class FooterBase extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      localeMenuAnchor: null
-    }
+      localeMenuAnchor: null,
+    };
   }
 
   render(): ReactNode {
@@ -39,8 +43,8 @@ class FooterBase extends Component<Props, State> {
     const i18n = this.props.i18n!;
 
     return (
-      <AppBar position="relative" component="footer" sx={{mt: "auto"}}>
-        <Container sx={{p: 2}} maxWidth={"lg"}>
+      <AppBar position="relative" component="footer" sx={{ mt: "auto" }}>
+        <Container sx={{ p: 2 }} maxWidth={"lg"}>
           <Grid container>
             <Grid
               item
@@ -54,12 +58,12 @@ class FooterBase extends Component<Props, State> {
               }}
             >
               <Button color={"inherit"} component={RouterLink} to={"/"}>
-                <Avatar sx={{mr: ".5rem"}} src={"/logo192.png"}/>
+                <Avatar sx={{ mr: ".5rem" }} src={"/logo192.png"} />
                 <Typography
                   variant="h5"
                   color="inherit"
                   noWrap
-                  sx={{textTransform: "none"}}
+                  sx={{ textTransform: "none" }}
                 >
                   VeniBot
                 </Typography>
@@ -72,32 +76,32 @@ class FooterBase extends Component<Props, State> {
                     <Link
                       underline={"none"}
                       component={RouterLink}
-                      sx={{"&:hover": {opacity: 0.7}}}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
                       to={"/tos"}
                       variant="body2"
                       color={"inherit"}
                     >
-                      {t('tos')}
+                      {t("tos")}
                     </Link>
                     <Link
                       underline={"none"}
                       component={RouterLink}
-                      sx={{"&:hover": {opacity: 0.7}}}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
                       to={"/privacy"}
                       variant="body2"
                       color={"inherit"}
                     >
-                      {t('privacy')}
+                      {t("privacy")}
                     </Link>
                     <Link
                       underline={"none"}
                       component={RouterLink}
-                      sx={{"&:hover": {opacity: 0.7}}}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
                       to={"/cookies"}
                       variant="body2"
                       color={"inherit"}
                     >
-                      {t('cookies')}
+                      {t("cookies")}
                     </Link>
                   </Stack>
                 </Grid>
@@ -105,7 +109,7 @@ class FooterBase extends Component<Props, State> {
                   <Stack>
                     <Link
                       underline={"none"}
-                      sx={{"&:hover": {opacity: 0.7}}}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
                       href={
                         new URL("/auth/support", process.env.REACT_APP_API_URL)
                           .href
@@ -113,20 +117,20 @@ class FooterBase extends Component<Props, State> {
                       variant="body2"
                       color={"inherit"}
                     >
-                      {t('supportServer')}
+                      {t("supportServer")}
                     </Link>
                     <Link
                       underline={"none"}
-                      sx={{"&:hover": {opacity: 0.7}}}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
                       href={process.env.REACT_APP_DOCS_URL}
                       variant="body2"
                       color={"inherit"}
                     >
-                      {t('docs')}
+                      {t("docs")}
                     </Link>
                     <Link
                       underline={"none"}
-                      sx={{"&:hover": {opacity: 0.7}}}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
                       href={process.env.REACT_APP_KARASIQ_URL}
                       variant="body2"
                       color={"inherit"}
@@ -135,58 +139,79 @@ class FooterBase extends Component<Props, State> {
                     </Link>
                   </Stack>
                 </Grid>
-                <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center'}}>
-                  <Box sx={{
-                    margin: 'auto'
-                  }}>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Box
+                    sx={{
+                      margin: "auto",
+                    }}
+                  >
                     <ThemeContext.Consumer>
-                      {({theme}) => (
+                      {({ theme, switchTheme }) => (
                         <Stack>
-
-                          <IconButton onClick={({currentTarget}) => this.setState({localeMenuAnchor: currentTarget})}>
-                            <Translate/>
+                          <IconButton
+                            onClick={({ currentTarget }) =>
+                              this.setState({ localeMenuAnchor: currentTarget })
+                            }
+                          >
+                            <Translate />
                           </IconButton>
 
                           <Menu
                             anchorEl={this.state.localeMenuAnchor}
                             keepMounted
                             open={Boolean(this.state.localeMenuAnchor)}
-                            onClose={() => this.setState({localeMenuAnchor: null})}
-                            onClick={() => this.setState({localeMenuAnchor: null})}
-                            transformOrigin={{horizontal: "right", vertical: "top"}}
-                            anchorOrigin={{horizontal: "right", vertical: "bottom"}}
-                            MenuListProps={{sx: {py: 0}}}
+                            onClose={() =>
+                              this.setState({ localeMenuAnchor: null })
+                            }
+                            onClick={() =>
+                              this.setState({ localeMenuAnchor: null })
+                            }
+                            transformOrigin={{
+                              horizontal: "right",
+                              vertical: "top",
+                            }}
+                            anchorOrigin={{
+                              horizontal: "right",
+                              vertical: "bottom",
+                            }}
+                            MenuListProps={{ sx: { py: 0 } }}
                           >
-                            <ListSubheader>{t('editLocale')}</ListSubheader>
-                            {['en-US', 'ru'].map(lang => (<ListItemButton selected={i18n.language === lang} key={lang}
-                                                             onClick={() => i18n.changeLanguage(lang)}>{t(`meta:languages.${lang}`)}</ListItemButton>))}
+                            <ListSubheader>{t("editLocale")}</ListSubheader>
+                            {["en-US", "ru"].map((lang) => (
+                              <ListItemButton
+                                selected={i18n.language === lang}
+                                key={lang}
+                                onClick={() => i18n.changeLanguage(lang)}
+                              >
+                                {t(`meta:languages.${lang}`)}
+                              </ListItemButton>
+                            ))}
                           </Menu>
                           <Fragment>
-                            <IconButton
-                              onClick={({currentTarget}) => {
-                                this.setState({localeMenuAnchor: currentTarget});
-                                this.forceUpdate();
-                              }}
-                              disabled>
-                              {theme.palette.mode === 'dark' ? <DarkMode/> : <LightMode/>}
+                            <IconButton onClick={() => switchTheme()} disabled>
+                              {theme.palette.mode === "dark" ? (
+                                <DarkMode />
+                              ) : (
+                                <LightMode />
+                              )}
                             </IconButton>
                           </Fragment>
-
                         </Stack>
                       )}
                     </ThemeContext.Consumer>
-
-
                   </Box>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Box sx={{textAlign: "center", pt: 0.5}}>
+          <Box sx={{ textAlign: "center", pt: 0.5 }}>
             <Typography variant={"caption"}>
-              {t('copyright', {year: new Date().getFullYear()})}
+              {t("copyright", { year: new Date().getFullYear() })}
             </Typography>
-
           </Box>
         </Container>
       </AppBar>
@@ -194,4 +219,7 @@ class FooterBase extends Component<Props, State> {
   }
 }
 
-export const Footer = compose(withRouter, withTranslation(["components/footer", "meta"]))(FooterBase) as ComponentClass;
+export const Footer = compose(
+  withRouter,
+  withTranslation(["components/footer", "meta"])
+)(FooterBase) as ComponentClass;

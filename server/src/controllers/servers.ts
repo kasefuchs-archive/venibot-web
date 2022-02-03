@@ -14,11 +14,6 @@ interface ConfigData {
   locale: string;
 }
 
-interface ConfigPayload {
-  new_data: ConfigData;
-  old_data: ConfigData;
-}
-
 export default class Servers {
   public static async index(req: Request, res: Response, _next: NextFunction) {
     const user: AuthProfile = req.user as AuthProfile;
@@ -62,37 +57,28 @@ export default class Servers {
     _next: NextFunction
   ) {
     const { guild_id } = req.params;
-    const { new_data, old_data } = req.body as ConfigPayload;
+    const data = req.body as ConfigData;
     try {
-      if (new_data.command_locale !== old_data.command_locale) {
-        axios
-          .put(
-            `https://discord.com/api/v9${Routes.applicationGuildCommands(
-              req.server.config.discord.strategyOptions.clientID,
-              guild_id
-            )}`,
-            commands[new_data.command_locale as keyof typeof commands],
-            {
-              headers: {
-                authorization: `Bot ${req.server.config.discord.botToken}`,
-              },
-            }
-          )
-          .then(async () => {
-            await req.server.orm
-              .getRepository(Guild)
-              .update(guild_id, new_data);
-            res.status(200).json({ code: 200, message: "Success" });
-          })
-          .catch(() => {
-            res.status(400).json({ code: 400, message: "Bad Request" });
-          });
-      } else {
-        await req.server.orm.getRepository(Guild).update(guild_id, new_data);
-        res.status(200).json({ code: 200, message: "Success" });
+      const initialData = await req.server.orm
+        .getRepository(Guild)
+        .findOneOrFail(guild_id);
+      await req.server.orm.getRepository(Guild).update(guild_id, data);
+      if (initialData.command_locale !== data.command_locale) {
+        await axios.put(
+          `https://discord.com/api/v9${Routes.applicationGuildCommands(
+            req.server.config.discord.strategyOptions.clientID,
+            guild_id
+          )}`,
+          commands[data.command_locale as keyof typeof commands],
+          {
+            headers: {
+              authorization: `Bot ${req.server.config.discord.botToken}`,
+            },
+          }
+        );
       }
+      res.status(200).json({ code: 200, message: "Success" });
     } catch (e) {
-      console.log(e);
       res.status(400).json({ code: 400, message: "Bad Request" });
     }
   }

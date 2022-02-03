@@ -1,4 +1,4 @@
-import React, {Component, ComponentClass, ReactNode} from "react";
+import React, { Component, ComponentClass, ReactNode } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -23,20 +23,22 @@ import {
   Stack,
   ThemeProvider,
   Toolbar,
+  Tooltip,
   Typography,
+  Zoom,
 } from "@mui/material";
-import {Drawer, LayoutBase, Loading, Shortcut} from "../components";
-import {Assignment, ExpandMore, Paid, Widgets} from "@mui/icons-material";
-import {AuthContext, ThemeContext} from "../context";
-import {dark, light} from "../components/layout/theme";
-import {isEqual} from "lodash";
-import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
-import {RouteComponentProps} from "react-router";
+import { Drawer, LayoutBase, Loading, Shortcut } from "../components";
+import { Assignment, ExpandMore, Paid, Widgets } from "@mui/icons-material";
+import { AuthContext, ThemeContext } from "../context";
+import { dark, light } from "../components/layout/theme";
+import { isEqual } from "lodash";
+import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
+import { RouteComponentProps } from "react-router";
 import axios from "axios";
-import {Server} from "../interfaces";
-import {LoadingButton} from "@mui/lab";
-import {compose} from "redux";
-import {TransProps, withTranslation} from "react-i18next";
+import { Server } from "../interfaces";
+import { LoadingButton } from "@mui/lab";
+import { compose } from "redux";
+import { TransProps, withTranslation } from "react-i18next";
 
 interface Config {
   command_locale: string;
@@ -82,35 +84,39 @@ class DashboardBase extends Component<Props, State> {
 
   componentDidMount() {
     axios
-      .get(new URL(`/timezones.json`, process.env.REACT_APP_API_URL).href)
-      .then(({data}) => this.setState({timezones: data}));
-    let repeats: number = 0;
-    const authWaiter = setInterval(() => {
-      if (++repeats === 15) clearInterval(authWaiter);
-      if (!this.state.config.new_data && this.context.token) {
-        clearInterval(authWaiter);
-        axios
-          .get(
-            new URL(
-              `/servers/${this.props.match.params.guild}/config`,
-              process.env.REACT_APP_API_URL
-            ).href,
-            {headers: {Authorization: this.context.token?.raw as string}}
-          )
-          .then(({data}) =>
-            this.setState({config: {new_data: data, old_data: data}})
-          );
-        axios
-          .get(
-            new URL(
-              `/servers/${this.props.match.params.guild}`,
-              process.env.REACT_APP_API_URL
-            ).href,
-            {headers: {Authorization: this.context.token?.raw as string}}
-          )
-          .then(({data}) => this.setState({guild: data}));
-      }
-    }, 1000);
+      .get(
+        new URL(`/assets/timezones.json`, process.env.REACT_APP_API_URL).href
+      )
+      .then(({ data }) => this.setState({ timezones: data }));
+    if (localStorage.getItem("auth.token")) {
+      let repeats: number = 0;
+      const authWaiter = setInterval(() => {
+        if (++repeats === 5) clearInterval(authWaiter);
+        if (!this.state.config.new_data && this.context.token) {
+          clearInterval(authWaiter);
+          axios
+            .get(
+              new URL(
+                `/servers/${this.props.match.params.guild}/config`,
+                process.env.REACT_APP_API_URL
+              ).href,
+              { headers: { Authorization: this.context.token?.raw as string } }
+            )
+            .then(({ data }) =>
+              this.setState({ config: { new_data: data, old_data: data } })
+            );
+          axios
+            .get(
+              new URL(
+                `/servers/${this.props.match.params.guild}`,
+                process.env.REACT_APP_API_URL
+              ).href,
+              { headers: { Authorization: this.context.token?.raw as string } }
+            )
+            .then(({ data }) => this.setState({ guild: data }));
+        }
+      }, 1000);
+    } else throw new Error("Forbidden");
   }
 
   render(): ReactNode {
@@ -120,7 +126,7 @@ class DashboardBase extends Component<Props, State> {
     );
     return (
       <ThemeContext.Consumer>
-        {({theme}) => (
+        {({ theme }) => (
           <LayoutBase>
             <Drawer variant="permanent">
               <Toolbar
@@ -135,22 +141,22 @@ class DashboardBase extends Component<Props, State> {
                 <Collapse in={loadingComplete}>
                   <ListItem
                     button
-                    sx={{pl: "12px", pt: "6px"}}
+                    sx={{ pl: "12px", pt: "6px" }}
                     component={Link}
                     to={"/servers"}
                   >
                     <ListItemIcon>
                       <Avatar
-                        sx={{width: 32, height: 32}}
+                        sx={{ width: 32, height: 32 }}
                         src={
                           this.state.guild?.icon
                             ? `https://cdn.discordapp.com/icons/${
-                              this.state.guild?.id
-                            }/${this.state.guild?.icon}.${
-                              this.state.guild?.icon.startsWith("a_")
-                                ? "gif"
-                                : "png"
-                            }?size=32`
+                                this.state.guild?.id
+                              }/${this.state.guild?.icon}.${
+                                this.state.guild?.icon.startsWith("a_")
+                                  ? "gif"
+                                  : "png"
+                              }?size=32`
                             : undefined
                         }
                         variant="rounded"
@@ -159,35 +165,35 @@ class DashboardBase extends Component<Props, State> {
                           ? this.state.guild.name.split(" ").length === 1
                             ? this.state.guild.name.split(" ")[0][0]
                             : this.state.guild.name.split(" ")[0][0] +
-                            this.state.guild.name.split(" ")[1][0]
+                              this.state.guild.name.split(" ")[1][0]
                           : undefined}
                       </Avatar>
                     </ListItemIcon>
-                    <ListItemText primary={this.state.guild?.name}/>
+                    <ListItemText primary={this.state.guild?.name} />
                   </ListItem>
-                  <Divider sx={{my: 0.5}}/>
+                  <Divider sx={{ my: 0.5 }} />
                 </Collapse>
                 <Shortcut.ListTab
                   targetValue={`${this.props.match.url}/common`}
                   currentValue={this.props.location.pathname}
-                  icon={<Widgets/>}
+                  icon={<Widgets />}
                   disabled={!loadingComplete}
-                  label={t('tabs.common')}
+                  label={t("tabs.common")}
                 />
                 <Shortcut.ListTab
                   targetValue={`${this.props.match.url}/audit`}
-                  tooltip={t('tabs.comingSoon')}
                   currentValue={this.props.location.pathname}
                   disabled
-                  icon={<Assignment/>}
-                  label={t('tabs.audit')}
+                  tooltip={t("tabs.comingSoon")}
+                  icon={<Assignment />}
+                  label={t("tabs.audit")}
                 />
                 <Shortcut.ListTab
                   targetValue={`${this.props.match.url}/economy`}
                   currentValue={this.props.location.pathname}
-                  tooltip={t('tabs.comingSoon')}
-                  icon={<Paid/>}
-                  label={t('tabs.economy')}
+                  tooltip={t("tabs.comingSoon")}
+                  icon={<Paid />}
+                  label={t("tabs.economy")}
                   disabled
                 />
               </List>
@@ -208,31 +214,31 @@ class DashboardBase extends Component<Props, State> {
                 minHeight: "100vh",
               }}
             >
-              <Toolbar/>
+              <Toolbar />
               <Loading value={loadingComplete}>
-                <Container maxWidth={"xl"} sx={{px: 0}}>
-                  <Box sx={{p: "12px", mt: 1}}>
+                <Container maxWidth={"xl"} sx={{ px: 0 }}>
+                  <Box sx={{ p: "12px", mt: 1 }}>
                     <Switch>
                       <Redirect
                         from={`/dashboard/:guild/`}
                         exact
                         to={`/dashboard/:guild/common`}
                       />
-                      <Route path={`${this.props.match.url}/common`}>
+                      <Route path={`${this.props.match.url}/common`} exact>
                         <Accordion defaultExpanded>
-                          <AccordionSummary expandIcon={<ExpandMore/>}>
-                            <Typography>{t('common.basic.title')}</Typography>
+                          <AccordionSummary expandIcon={<ExpandMore />}>
+                            <Typography>{t("common.basic.title")}</Typography>
                           </AccordionSummary>
                           <AccordionDetails>
                             <Grid container spacing={2}>
                               <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
                                   <InputLabel id="interface-language-select-label">
-                                    {t('common.basic.interfaceLanguage')}
+                                    {t("common.basic.interfaceLanguage")}
                                   </InputLabel>
                                   <Select
                                     labelId="interface-language-select-label"
-                                    label={t('common.basic.interfaceLanguage')}
+                                    label={t("common.basic.interfaceLanguage")}
                                     value={this.state.config.new_data?.locale}
                                     onChange={(event: SelectChangeEvent) =>
                                       this.updateConfig({
@@ -240,19 +246,23 @@ class DashboardBase extends Component<Props, State> {
                                       })
                                     }
                                   >
-                                    <MenuItem value={"ru"}>{t('meta:languages.ru')}</MenuItem>
-                                    <MenuItem value={"en"}>{t('meta:languages.en-US')}</MenuItem>
+                                    <MenuItem value={"ru"}>
+                                      {t("meta:languages.ru")}
+                                    </MenuItem>
+                                    <MenuItem value={"en"}>
+                                      {t("meta:languages.en-US")}
+                                    </MenuItem>
                                   </Select>
                                 </FormControl>
                               </Grid>
                               <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
                                   <InputLabel id="commands-language-select-label">
-                                    {t('common.basic.commandLanguage')}
+                                    {t("common.basic.commandLanguage")}
                                   </InputLabel>
                                   <Select
                                     labelId="commands-language-select-label"
-                                    label={t('common.basic.commandLanguage')}
+                                    label={t("common.basic.commandLanguage")}
                                     onChange={(event: SelectChangeEvent) =>
                                       this.updateConfig({
                                         command_locale: event.target.value,
@@ -262,19 +272,23 @@ class DashboardBase extends Component<Props, State> {
                                       this.state.config.new_data?.command_locale
                                     }
                                   >
-                                    <MenuItem value={"ru"}>{t('meta:languages.ru')}</MenuItem>
-                                    <MenuItem value={"en"}>{t('meta:languages.en-US')}</MenuItem>
+                                    <MenuItem value={"ru"}>
+                                      {t("meta:languages.ru")}
+                                    </MenuItem>
+                                    <MenuItem value={"en"}>
+                                      {t("meta:languages.en-US")}
+                                    </MenuItem>
                                   </Select>
                                 </FormControl>
                               </Grid>
                               <Grid item xs={12}>
-                                <FormControl fullWidth sx={{maxHeight: 120}}>
+                                <FormControl fullWidth sx={{ maxHeight: 120 }}>
                                   <InputLabel id="commands-language-select-label">
-                                    {t('common.basic.timezone')}
+                                    {t("common.basic.timezone")}
                                   </InputLabel>
                                   <Select
                                     labelId="commands-language-select-label"
-                                    label={t('common.basic.timezone')}
+                                    label={t("common.basic.timezone")}
                                     value={this.state.config.new_data?.timezone}
                                     onChange={(event: SelectChangeEvent) =>
                                       this.updateConfig({
@@ -283,7 +297,7 @@ class DashboardBase extends Component<Props, State> {
                                     }
                                     MenuProps={{
                                       PaperProps: {
-                                        sx: {maxHeight: "200px"},
+                                        sx: { maxHeight: "200px" },
                                       },
                                     }}
                                   >
@@ -291,7 +305,7 @@ class DashboardBase extends Component<Props, State> {
                                       ?.sort((a, b) =>
                                         Number(a.offset > b.offset)
                                       )
-                                      .map(({name, value}) => (
+                                      .map(({ name, value }) => (
                                         <MenuItem key={value} value={value}>
                                           {name}
                                         </MenuItem>
@@ -302,6 +316,9 @@ class DashboardBase extends Component<Props, State> {
                             </Grid>
                           </AccordionDetails>
                         </Accordion>
+                      </Route>
+                      <Route path={`${this.props.match.url}/audit`} exact>
+                        xd
                       </Route>
                     </Switch>
                   </Box>
@@ -315,7 +332,7 @@ class DashboardBase extends Component<Props, State> {
                           this.state.config.new_data
                         )
                       }
-                      message={t('snackbar.save.message')}
+                      message={t("snackbar.save.message")}
                       anchorOrigin={{
                         horizontal: "center",
                         vertical: "bottom",
@@ -331,7 +348,7 @@ class DashboardBase extends Component<Props, State> {
                               }
                               disabled={this.state.savingNow}
                             >
-                              {t('snackbar.save.reset')}
+                              {t("snackbar.save.reset")}
                             </Button>
                             <LoadingButton
                               loading={this.state.savingNow}
@@ -339,7 +356,7 @@ class DashboardBase extends Component<Props, State> {
                               size="small"
                               onClick={() => this.saveConfig()}
                             >
-                              {t('snackbar.save.save')}
+                              {t("snackbar.save.save")}
                             </LoadingButton>
                           </Stack>
                         </ThemeProvider>
@@ -365,15 +382,15 @@ class DashboardBase extends Component<Props, State> {
   }
 
   private saveConfig() {
-    this.setState({savingNow: true});
+    this.setState({ savingNow: true });
     axios
       .patch(
         new URL(
           `/servers/${this.props.match.params.guild}/config`,
           process.env.REACT_APP_API_URL
         ).href,
-        this.state.config,
-        {headers: {Authorization: this.context.token?.raw as string}}
+        this.state.config.new_data,
+        { headers: { Authorization: this.context.token?.raw as string } }
       )
       .then(() => {
         this.setState({
@@ -384,8 +401,11 @@ class DashboardBase extends Component<Props, State> {
           savingNow: false,
         });
       })
-      .catch(() => this.setState({savingNow: false}));
+      .catch(() => this.setState({ savingNow: false }));
   }
 }
 
-export const Dashboard = compose(withRouter, withTranslation(["pages/dashboard", "meta"]))(DashboardBase) as ComponentClass;
+export const Dashboard = compose(
+  withRouter,
+  withTranslation(["pages/dashboard", "meta"])
+)(DashboardBase) as ComponentClass;

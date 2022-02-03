@@ -14,11 +14,11 @@ import {
 } from "@mui/material";
 import { Login, Logout, SettingsApplications } from "@mui/icons-material";
 import { AuthContext } from "../../context";
-import {Component, ComponentClass, Fragment, ReactNode} from "react";
+import { Component, ComponentClass, Fragment, ReactNode } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
-import {TransProps, withTranslation} from "react-i18next";
-import {compose} from "redux";
+import { TransProps, withTranslation } from "react-i18next";
+import { compose } from "redux";
 
 interface State {
   userMenuAnchor: null | HTMLElement;
@@ -56,10 +56,10 @@ class HeaderBase extends Component<Props, State> {
             sx={{ pr: ".75rem", display: { xs: "none", md: "flex" } }}
           >
             <Button color="inherit" disabled>
-              {t('status')}
+              {t("status")}
             </Button>
             <Button href={process.env.REACT_APP_DOCS_URL} color="inherit">
-              {t('docs')}
+              {t("docs")}
             </Button>
             <Button
               href={
@@ -67,7 +67,7 @@ class HeaderBase extends Component<Props, State> {
               }
               color="inherit"
             >
-              {t('support')}
+              {t("support")}
             </Button>
           </Stack>
           <AuthContext.Consumer>
@@ -118,7 +118,10 @@ class HeaderBase extends Component<Props, State> {
                       transformOrigin={{ horizontal: "right", vertical: "top" }}
                       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                     >
-                      <ListItem alignItems="flex-start" sx={{borderStyle: 'none'}}>
+                      <ListItem
+                        alignItems="flex-start"
+                        sx={{ borderStyle: "none" }}
+                      >
                         <ListItemAvatar sx={{ mt: "4px" }}>
                           <Avatar
                             alt={user.username}
@@ -147,7 +150,7 @@ class HeaderBase extends Component<Props, State> {
                             component={Link}
                             to={"/servers"}
                           >
-                            {t('myServers')}
+                            {t("myServers")}
                           </Button>
                           <Button
                             onClick={() => {
@@ -157,7 +160,7 @@ class HeaderBase extends Component<Props, State> {
                             color="error"
                             startIcon={<Logout />}
                           >
-                            {t('logout')}
+                            {t("logout")}
                           </Button>
                         </Stack>
                       </ListItem>
@@ -169,7 +172,7 @@ class HeaderBase extends Component<Props, State> {
                     href={new URL("/auth", process.env.REACT_APP_API_URL).href}
                     endIcon={<Login />}
                   >
-                    {t('login')}
+                    {t("login")}
                   </Button>
                 )}
               </Fragment>
@@ -181,4 +184,7 @@ class HeaderBase extends Component<Props, State> {
   }
 }
 
-export const Header = compose(withRouter, withTranslation('components/header'))(HeaderBase) as ComponentClass;
+export const Header = compose(
+  withRouter,
+  withTranslation("components/header")
+)(HeaderBase) as ComponentClass;

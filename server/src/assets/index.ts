@@ -2,4 +2,4 @@
 import "./timezones.json";
 import "./commands.json";
 import "./schemas.json";
-export * from "./banner";
+import "./banner.json";

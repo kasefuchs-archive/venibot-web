@@ -2,6 +2,7 @@ import { Config } from "./interface/Config";
 import * as Entities from "./entities";
 import dotenv from "dotenv";
 import path from "path";
+import { ConnectionOptions } from "typeorm";
 
 dotenv.config({
   path: path.join(__dirname, "..", ".env"),
@@ -9,7 +10,7 @@ dotenv.config({
 
 const config = (): Config => {
   const dbConnectionString = process.env.TYPEORM_URL!;
-  const type: any = dbConnectionString.includes("://")
+  const type = dbConnectionString.includes("://")
     ? dbConnectionString.split(":")[0]?.replace("+srv", "")
     : "sqlite";
   const isSqlite: boolean = type.includes("sqlite");
@@ -37,11 +38,12 @@ const config = (): Config => {
     server: {
       port: Number(process.env.PORT || 8080),
       hostname: process.env.HOST || "127.0.0.1",
-      environment: process.env.NODE_ENV || ("development" as any),
+      environment: (process.env.NODE_ENV ||
+        "development") as Config["server"]["environment"],
     },
     frontendURI: process.env.FRONTEND_URL!,
     orm: {
-      type,
+      type: type as any,
       url: isSqlite ? undefined : dbConnectionString,
       database: isSqlite ? dbConnectionString : undefined,
       entities: Object.values(Entities).filter(

@@ -12,7 +12,7 @@ export interface Config {
   server: {
     port?: number;
     hostname: string;
-    environment?: "development" | "production";
+    environment: "development" | "production";
   };
   frontendURI: string;
   orm: ConnectionOptions;
