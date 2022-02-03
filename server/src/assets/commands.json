@@ -4,7 +4,38 @@
       "name": "цитата",
       "description": "Вывод случайного сообщения из закреплённых",
       "type": 1,
-      "key": "stock.command.citation"
+      "key": "stock.command.citation",
+      "group": "utility"
+    },
+    {
+      "name": "погода",
+      "description": "Просмотр погоды в определённом городе",
+      "type": 1,
+      "key": "stock.command.weather",
+      "options": [
+        {
+          "name": "city",
+          "description": "Город, в котором вы хотите посмотреть погоду",
+          "type": 3,
+          "required": true
+        }
+      ],
+      "group": "utility"
+    },
+    {
+      "name": "гугл",
+      "description": "Получить ссылку для поиска в Google",
+      "type": 1,
+      "key": "stock.command.google",
+      "options": [
+        {
+          "name": "query",
+          "description": "Поисковый запрос",
+          "type": 3,
+          "required": true
+        }
+      ],
+      "group": "utility"
     }
   ],
   "en": [
@@ -12,7 +43,38 @@
       "name": "citation",
       "description": "Output of a random message from pinned",
       "type": 1,
-      "key": "stock.command.citation"
+      "key": "stock.command.citation",
+      "group": "utility"
+    },
+    {
+      "name": "weather",
+      "description": "Check the weather in the city",
+      "type": 1,
+      "key": "stock.command.weather",
+      "options": [
+        {
+          "name": "city",
+          "description": "The city where yo want to check the weather",
+          "type": 3,
+          "required": true
+        }
+      ],
+      "group": "utility"
+    },
+    {
+      "name": "google",
+      "description": "Get a Google search link",
+      "type": 1,
+      "key": "stock.command.google",
+      "options": [
+        {
+          "name": "query",
+          "description": "Your search query",
+          "type": 3,
+          "required": true
+        }
+      ],
+      "group": "utility"
     }
   ]
 }

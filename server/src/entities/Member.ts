@@ -10,7 +10,4 @@ export class Member {
 
   @Column({ type: "bigint", name: "member_id", nullable: false })
   id!: string;
-
-  @Column({ type: "bigint", name: "permissions", nullable: false })
-  permissions!: number;
 }
