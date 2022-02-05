@@ -19,15 +19,12 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Snackbar,
   Stack,
   ThemeProvider,
   Toolbar,
-  Tooltip,
   Typography,
-  Zoom,
 } from "@mui/material";
-import { Drawer, LayoutBase, Loading, Shortcut } from "../components";
+import { Drawer, LayoutBase, Loading, Shortcut, Snackbar } from "../components";
 import { Assignment, ExpandMore, Paid, Widgets } from "@mui/icons-material";
 import { AuthContext, ThemeContext } from "../context";
 import { dark, light } from "../components/layout/theme";
@@ -337,31 +334,28 @@ class DashboardBase extends Component<Props, State> {
                         horizontal: "center",
                         vertical: "bottom",
                       }}
-                      action={
-                        <ThemeProvider theme={theme}>
-                          <Stack direction={"row"} spacing={0.5}>
-                            <Button
-                              color={"inherit"}
-                              size="small"
-                              onClick={() =>
-                                this.updateConfig(this.state.config.old_data)
-                              }
-                              disabled={this.state.savingNow}
-                            >
-                              {t("snackbar.save.reset")}
-                            </Button>
-                            <LoadingButton
-                              loading={this.state.savingNow}
-                              variant={"contained"}
-                              size="small"
-                              onClick={() => this.saveConfig()}
-                            >
-                              {t("snackbar.save.save")}
-                            </LoadingButton>
-                          </Stack>
-                        </ThemeProvider>
-                      }
-                    />
+                    >
+                      <Stack direction={"row"} spacing={0.5}>
+                        <Button
+                          color={"inherit"}
+                          size="small"
+                          onClick={() =>
+                            this.updateConfig(this.state.config.old_data)
+                          }
+                          disabled={this.state.savingNow}
+                        >
+                          {t("snackbar.save.reset")}
+                        </Button>
+                        <LoadingButton
+                          loading={this.state.savingNow}
+                          variant={"contained"}
+                          size="small"
+                          onClick={() => this.saveConfig()}
+                        >
+                          {t("snackbar.save.save")}
+                        </LoadingButton>
+                      </Stack>
+                    </Snackbar>
                   </ThemeProvider>
                 </Container>
               </Loading>

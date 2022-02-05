@@ -19,14 +19,7 @@ import {
 import { AuthContext } from "../context";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-  Group,
-  Layers,
-  Security,
-  Settings,
-  Speaker,
-  Widgets,
-} from "@mui/icons-material";
+import { Group, Layers, Security, Speaker, Widgets } from "@mui/icons-material";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TransProps, withTranslation } from "react-i18next";

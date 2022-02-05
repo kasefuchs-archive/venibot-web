@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { ThemeContext, AuthContext } from "./context";
-import { CssBaseline, Theme, ThemeProvider } from "@mui/material";
+import {
+  Button,
+  CssBaseline,
+  Stack,
+  Theme,
+  ThemeProvider,
+} from "@mui/material";
 import axios from "axios";
 import { dark, light } from "./components/layout/theme";
 import "./styles";
 import { Token, User } from "./interfaces";
 import { Buffer } from "buffer";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Link } from "react-router-dom";
 import Routes from "./_routes";
-import { Router } from "./components";
+import { Router, Snackbar } from "./components";
+import { useTranslation } from "react-i18next";
 
 function App() {
   const [theme, setTheme] = useState<Theme>(dark);
   const [user, setUser] = useState<null | User>(null);
   const [token, setToken] = useState<null | Token>(null);
+  const [cookiesAccepted, setCookiesAccept] = useState<boolean>(true);
+  const { t } = useTranslation("meta");
 
   // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
@@ -41,6 +50,11 @@ function App() {
   }
 
   useEffect((): void => {
+    setCookiesAccept(localStorage.getItem("cookies_accepted") === "true");
+    login();
+    // if (!localStorage.getItem("theme"))
+    //   setTheme(prefersDarkMode ? dark : light);
+    // else setTheme(localStorage.getItem("theme") === "dark" ? dark : light);
     window.postMessage(
       {
         devtoolsEnabled: false,
@@ -49,10 +63,6 @@ function App() {
       },
       "*"
     );
-    login();
-    // if (!localStorage.getItem("theme"))
-    //   setTheme(prefersDarkMode ? dark : light);
-    // else setTheme(localStorage.getItem("theme") === "dark" ? dark : light);
   }, []);
 
   return (
@@ -83,8 +93,23 @@ function App() {
         >
           <ThemeProvider theme={theme}>
             <CssBaseline />
-
             <Router routes={Routes} />
+            <Snackbar message={t("cookies.text")} open={!cookiesAccepted} sx={{ maxWidth: "sm" }}>
+              <Stack direction={"row"} spacing={0.5}>
+                <Button color={"secondary"} component={Link} to={"/cookies"}>
+                  {t("cookies.info")}
+                </Button>
+                <Button
+                  variant={"contained"}
+                  onClick={() => {
+                    localStorage.setItem("cookies_accepted", "true");
+                    setCookiesAccept(true);
+                  }}
+                >
+                  {t("cookies.accept")}
+                </Button>
+              </Stack>
+            </Snackbar>
           </ThemeProvider>
         </AuthContext.Provider>
       </ThemeContext.Provider>

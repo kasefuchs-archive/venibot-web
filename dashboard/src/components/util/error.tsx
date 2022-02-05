@@ -1,10 +1,9 @@
 import { Home } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import React, { Component, ReactNode } from "react";
 import {
   TransProps,
   withTranslation,
-  WithTranslationProps,
 } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Layout } from "../layout";
@@ -23,7 +22,7 @@ class ErrorHandlerBase extends Component<TransProps<any>, State> {
     return { hasError: true, error };
   }
 
-  public render() {
+  public render(): ReactNode {
     if (this.state.hasError) {
       const t = this.props.t!;
       return (

@@ -2,5 +2,10 @@
   "languages": {
     "ru": "Russian",
     "en-US": "English"
+  },
+  "cookies": {
+    "text": "VeniBot uses cookies and similar technologies on its website. By continuing your browsing after being presented with the cookie information you consent to such use.",
+    "accept": "Ok",
+    "info": "Learn More"
   }
 }
