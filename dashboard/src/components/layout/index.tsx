@@ -1,8 +1,8 @@
-import { Header } from "./header";
-import React, { Component, ReactNode } from "react";
-import * as Themes from "./theme";
 import { Box, Toolbar } from "@mui/material";
+import React, { Component, ReactNode } from "react";
 import { Footer } from "./footer";
+import { Header } from "./header";
+import * as Themes from "./theme";
 
 export class LayoutBase extends Component {
   render(): ReactNode {
@@ -44,3 +44,4 @@ export class Layout extends Component {
 }
 
 export { Themes, Footer };
+

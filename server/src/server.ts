@@ -1,20 +1,21 @@
-import express, { Application, NextFunction, Request, Response } from "express";
-import morgan from "morgan";
-import helmet from "helmet";
 import cors from "cors";
-import { Profile, Strategy } from "passport-discord";
-import { getFilesWithKeyword } from "./utils";
-import passport from "passport";
+import EventEmitter from "events";
+import express, { Application, NextFunction, Request, Response } from "express";
+import { ValidationError } from "express-json-validator-middleware";
 import session from "express-session";
+import helmet from "helmet";
+import morgan from "morgan";
+import passport from "passport";
+import { Profile, Strategy } from "passport-discord";
+import {DataSource} from "typeorm";
+import banner from "./assets/banner.json";
 import { RouteGroup } from "./interface";
 import { Config } from "./interface/Config";
-import { Connection, createConnection } from "typeorm";
-import EventEmitter from "events";
-import banner from "./assets/banner.json";
+import { getFilesWithKeyword } from "./utils";
 
 export class Server extends EventEmitter {
   public app: Application;
-  public orm?: Connection;
+  public dataSource?: DataSource;
 
   constructor(public readonly config: Config) {
     super();
@@ -62,24 +63,37 @@ export class Server extends EventEmitter {
       }
     );
     this.app.use(
-      (err: Error, req: Request, res: Response, _next: NextFunction) => {
-        return res.status(500).json({
-          error: err.name,
-          message: err.message,
-        });
+      (
+        err: Error | ValidationError,
+        req: Request,
+        res: Response,
+        _next: NextFunction
+      ) => {
+        if (err.name === "JsonSchemaValidationError") {
+          return res.status(400).json({
+            code: 400,
+            ...err,
+          });
+        } else {
+          return res.status(500).json({
+            error: err.name,
+            message: err.message,
+            code: 500,
+          });
+        }
       }
     );
     this.on("ready", async () => {
       console.clear();
       console.log(`\n${banner.join("\n")}\n`);
-      console.log(`Port       :: ${this.config.server.port}`);
-      console.log(`Database   :: ${this.config.orm.type}`);
-      console.log(`Evironment :: ${this.config.server.environment}`);
+      console.log(`Port        :: ${this.config.server.port}`);
+      console.log(`Database    :: ${this.config.dataSource.type}`);
+      console.log(`Environment :: ${this.config.server.environment}`);
     });
   }
 
   async start() {
-    this.orm = await createConnection(this.config.orm);
+    this.dataSource = await new DataSource(this.config.dataSource).initialize();
     this.app.listen(
       this.config.server.port || 8080,
       this.config.server.hostname,

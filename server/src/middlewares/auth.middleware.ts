@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import config from "../config";
-import { TokenExpiredError, verify, VerifyErrors } from "jsonwebtoken";
 import Collection from "@discordjs/collection";
-import { GuildInfo, Profile } from "passport-discord";
 import DiscordOAuth2 from "discord-oauth2";
+import { NextFunction, Request, Response } from "express";
+import { TokenExpiredError, verify, VerifyErrors } from "jsonwebtoken";
+import { GuildInfo, Profile } from "passport-discord";
+import config from "../config";
 
 const Users = new Collection<string, AuthProfile>();
 export let users = Users;

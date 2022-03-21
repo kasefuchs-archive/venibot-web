@@ -19,6 +19,10 @@ const routes: Array<Route> = [
     Component: <Pages.MarkdownRenderer file={"tos"} />,
   },
   {
+    path: "/commands",
+    Component: <Pages.Commands />,
+  },
+  {
     path: "/privacy",
     Component: <Pages.MarkdownRenderer file={"privacy"} />,
   },

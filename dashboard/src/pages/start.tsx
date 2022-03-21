@@ -1,11 +1,6 @@
-import React, {
-  Component,
-  createRef,
-  Fragment,
-  MutableRefObject,
-  ReactNode,
-} from "react";
-import { Layout, Loading } from "../components";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Group, Layers, Security, Speaker, Widgets } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -14,15 +9,20 @@ import {
   Grid,
   Paper,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
-import { AuthContext } from "../context";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { Group, Layers, Security, Speaker, Widgets } from "@mui/icons-material";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, {
+  Component,
+  createRef,
+  Fragment,
+  MutableRefObject,
+  ReactNode
+} from "react";
 import { TransProps, withTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Layout, Loading } from "../components";
+import { AuthContext } from "../context";
 
 interface State {
   stats?: {

@@ -1,4 +1,8 @@
 {
+  "errors": {
+    "#/properties/prefix/minLength": "Prefix is required",
+    "unknown": "An unknown error occurred"
+  },
   "tabs": {
     "common": "Common",
     "audit": "Audit",
@@ -10,7 +14,8 @@
       "title": "Main",
       "interfaceLanguage": "Interface Language",
       "commandLanguage": "Command Language",
-      "timezone": "Server Timezone"
+      "timezone": "Server Timezone",
+      "prefix": "Prefix"
     }
   },
   "snackbar": {

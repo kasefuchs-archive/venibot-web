@@ -1,8 +1,7 @@
-import { Config } from "./interface/Config";
-import * as Entities from "./entities";
 import dotenv from "dotenv";
 import path from "path";
-import { ConnectionOptions } from "typeorm";
+import * as Entities from "./entities";
+import { Config } from "./interface/Config";
 
 dotenv.config({
   path: path.join(__dirname, "..", ".env"),
@@ -42,7 +41,7 @@ const config = (): Config => {
         "development") as Config["server"]["environment"],
     },
     frontendURI: process.env.FRONTEND_URL!,
-    orm: {
+    dataSource: {
       type: type as any,
       url: isSqlite ? undefined : dbConnectionString,
       database: isSqlite ? dbConnectionString : undefined,

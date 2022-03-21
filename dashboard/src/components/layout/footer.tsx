@@ -1,3 +1,4 @@
+import { DarkMode, LightMode, Translate } from "@mui/icons-material";
 import {
   AppBar,
   Avatar,
@@ -11,17 +12,16 @@ import {
   ListSubheader,
   Menu,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
+import { Component, ComponentClass, Fragment, ReactNode } from "react";
+import { TransProps, withTranslation } from "react-i18next";
 import {
   Link as RouterLink,
   RouteComponentProps,
-  withRouter,
+  withRouter
 } from "react-router-dom";
 import { compose } from "redux";
-import { Component, ComponentClass, Fragment, ReactNode } from "react";
-import { TransProps, withTranslation } from "react-i18next";
-import { DarkMode, LightMode, Translate } from "@mui/icons-material";
 import { ThemeContext } from "../../context";
 
 type Props = RouteComponentProps & TransProps<any>;
@@ -103,6 +103,15 @@ class FooterBase extends Component<Props, State> {
                     >
                       {t("cookies")}
                     </Link>
+                    <Link
+                      underline={"none"}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      href={process.env.REACT_APP_DONATE_URL}
+                      variant="body2"
+                      color={"inherit"}
+                    >
+                      {t("donate")}
+                    </Link>
                   </Stack>
                 </Grid>
                 <Grid item xs>
@@ -119,6 +128,7 @@ class FooterBase extends Component<Props, State> {
                     >
                       {t("supportServer")}
                     </Link>
+
                     <Link
                       underline={"none"}
                       sx={{ "&:hover": { opacity: 0.7 } }}
@@ -127,6 +137,16 @@ class FooterBase extends Component<Props, State> {
                       color={"inherit"}
                     >
                       {t("docs")}
+                    </Link>
+                    <Link
+                      underline={"none"}
+                      component={RouterLink}
+                      sx={{ "&:hover": { opacity: 0.7 } }}
+                      to={"/commands"}
+                      variant="body2"
+                      color={"inherit"}
+                    >
+                      {t("commands")}
                     </Link>
                     <Link
                       underline={"none"}
@@ -181,7 +201,7 @@ class FooterBase extends Component<Props, State> {
                             MenuListProps={{ sx: { py: 0 } }}
                           >
                             <ListSubheader>{t("editLocale")}</ListSubheader>
-                            {["en-US", "ru"].map((lang) => (
+                            {["en", "ru"].map((lang) => (
                               <ListItemButton
                                 selected={i18n.language === lang}
                                 key={lang}

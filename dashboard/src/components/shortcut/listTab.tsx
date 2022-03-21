@@ -3,11 +3,11 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
-  Zoom,
+  Zoom
 } from "@mui/material";
 import { Component, Fragment, ReactElement, ReactNode } from "react";
-import { ThemeContext } from "../../context";
 import { Link } from "react-router-dom";
+import { ThemeContext } from "../../context";
 
 interface Props {
   targetValue: string;

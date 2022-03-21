@@ -12,6 +12,11 @@
         "enum": ["ru", "en"],
         "type": "string"
       },
+      "prefix": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 5
+      },
       "timezone": {
         "enum": [
           "Africa/Abidjan",
@@ -269,7 +274,13 @@
         "type": "string"
       }
     },
-    "required": ["audit_enabled", "command_locale", "locale", "timezone"],
+    "required": [
+      "audit_enabled",
+      "command_locale",
+      "locale",
+      "timezone",
+      "prefix"
+    ],
     "type": "object",
     "additionalProperties": false
   },

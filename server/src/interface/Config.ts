@@ -1,6 +1,6 @@
-import { StrategyOptions } from "passport-discord";
 import { SessionOptions } from "express-session";
-import { ConnectionOptions } from "typeorm";
+import { StrategyOptions } from "passport-discord";
+import { DataSourceOptions } from "typeorm";
 
 export interface Config {
   discord: {
@@ -15,5 +15,5 @@ export interface Config {
     environment: "development" | "production";
   };
   frontendURI: string;
-  orm: ConnectionOptions;
+  dataSource: DataSourceOptions;
 }

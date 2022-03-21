@@ -1,4 +1,8 @@
 {
+  "errors": {
+    "#/properties/prefix/minLength": "Укажите префикс",
+    "unknown": "Произошла неизвестная ошибка"
+  },
   "tabs": {
     "common": "Общее",
     "audit": "Аудит",
@@ -10,7 +14,8 @@
       "title": "Основное",
       "interfaceLanguage": "Язык интерфейса бота",
       "commandLanguage": "Язык команд бота",
-      "timezone": "Часовой пояс сервера"
+      "timezone": "Часовой пояс сервера",
+      "prefix": "Префикс"
     }
   },
   "snackbar": {

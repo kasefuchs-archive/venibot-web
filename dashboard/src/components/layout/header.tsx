@@ -1,4 +1,4 @@
-import { AppBar } from "../styled";
+import { Login, Logout, SettingsApplications } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -10,15 +10,15 @@ import {
   Menu,
   Stack,
   Toolbar,
-  Typography,
+  Typography
 } from "@mui/material";
-import { Login, Logout, SettingsApplications } from "@mui/icons-material";
-import { AuthContext } from "../../context";
 import { Component, ComponentClass, Fragment, ReactNode } from "react";
-import { Link, withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
 import { TransProps, withTranslation } from "react-i18next";
+import { RouteComponentProps } from "react-router";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
+import { AuthContext } from "../../context";
+import { AppBar } from "../styled";
 
 interface State {
   userMenuAnchor: null | HTMLElement;
@@ -55,11 +55,22 @@ class HeaderBase extends Component<Props, State> {
             spacing={1}
             sx={{ pr: ".75rem", display: { xs: "none", md: "flex" } }}
           >
-            <Button color="inherit" disabled>
+            <Button
+              color="inherit"
+              href={process.env.REACT_APP_STATUS_URL}
+              disabled={!Boolean(process.env.REACT_APP_STATUS_URL)}
+            >
               {t("status")}
             </Button>
-            <Button href={process.env.REACT_APP_DOCS_URL} color="inherit">
+            <Button
+              color="inherit"
+              href={process.env.REACT_APP_DOCS_URL}
+              disabled={!Boolean(process.env.REACT_APP_DOCS_URL)}
+            >
               {t("docs")}
+            </Button>
+            <Button color="inherit" component={Link} to={"/commands"}>
+              {t("commands")}
             </Button>
             <Button
               href={

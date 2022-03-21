@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { ThemeContext, AuthContext } from "./context";
 import {
   Button,
   CssBaseline,
   Stack,
   Theme,
-  ThemeProvider,
+  ThemeProvider
 } from "@mui/material";
 import axios from "axios";
-import { dark, light } from "./components/layout/theme";
-import "./styles";
-import { Token, User } from "./interfaces";
 import { Buffer } from "buffer";
-import { BrowserRouter, Link } from "react-router-dom";
-import Routes from "./_routes";
-import { Router, Snackbar } from "./components";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { BrowserRouter, Link } from "react-router-dom";
+import { Router, Snackbar } from "./components";
+import { dark, light } from "./components/layout/theme";
+import { AuthContext, ThemeContext } from "./context";
+import { Token, User } from "./interfaces";
+import "./styles";
+import Routes from "./_routes";
 
 function App() {
   const [theme, setTheme] = useState<Theme>(dark);
@@ -94,7 +94,11 @@ function App() {
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <Router routes={Routes} />
-            <Snackbar message={t("cookies.text")} open={!cookiesAccepted} sx={{ maxWidth: "sm" }}>
+            <Snackbar
+              message={t("cookies.text")}
+              open={!cookiesAccepted}
+              sx={{ maxWidth: "sm" }}
+            >
               <Stack direction={"row"} spacing={0.5}>
                 <Button color={"secondary"} component={Link} to={"/cookies"}>
                   {t("cookies.info")}

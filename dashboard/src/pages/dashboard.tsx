@@ -1,8 +1,10 @@
-import React, { Component, ComponentClass, ReactNode } from "react";
+import { Assignment, ExpandMore, Paid, Widgets } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Avatar,
   Box,
   Button,
@@ -20,28 +22,29 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  TextField,
   ThemeProvider,
   Toolbar,
-  Typography,
+  Typography
 } from "@mui/material";
-import { Drawer, LayoutBase, Loading, Shortcut, Snackbar } from "../components";
-import { Assignment, ExpandMore, Paid, Widgets } from "@mui/icons-material";
-import { AuthContext, ThemeContext } from "../context";
-import { dark, light } from "../components/layout/theme";
+import axios, { AxiosError } from "axios";
 import { isEqual } from "lodash";
-import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
-import axios from "axios";
-import { Server } from "../interfaces";
-import { LoadingButton } from "@mui/lab";
-import { compose } from "redux";
+import React, { Component, ComponentClass, ReactNode } from "react";
 import { TransProps, withTranslation } from "react-i18next";
+import { RouteComponentProps } from "react-router";
+import { Link, Redirect, Route, Switch, withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { Drawer, LayoutBase, Loading, Shortcut, Snackbar } from "../components";
+import { dark, light } from "../components/layout/theme";
+import { AuthContext, ThemeContext } from "../context";
+import { Server } from "../interfaces";
 
 interface Config {
   command_locale: string;
   locale: string;
   timezone: string;
   audit_enabled: boolean;
+  prefix: string;
 }
 
 interface State {
@@ -50,6 +53,8 @@ interface State {
     old_data?: Config;
   };
   savingNow: boolean;
+  errored: boolean;
+  error: string;
   timezones?: Array<{
     name: string;
     value: string;
@@ -71,6 +76,8 @@ class DashboardBase extends Component<Props, State> {
     super(props);
     this.state = {
       savingNow: false,
+      error: "",
+      errored: false,
       config: {
         new_data: undefined,
         old_data: undefined,
@@ -215,109 +222,144 @@ class DashboardBase extends Component<Props, State> {
               <Loading value={loadingComplete}>
                 <Container maxWidth={"xl"} sx={{ px: 0 }}>
                   <Box sx={{ p: "12px", mt: 1 }}>
-                    <Switch>
-                      <Redirect
-                        from={`/dashboard/:guild/`}
-                        exact
-                        to={`/dashboard/:guild/common`}
-                      />
-                      <Route path={`${this.props.match.url}/common`} exact>
-                        <Accordion defaultExpanded>
-                          <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography>{t("common.basic.title")}</Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <Grid container spacing={2}>
-                              <Grid item xs={12} md={6}>
-                                <FormControl fullWidth>
-                                  <InputLabel id="interface-language-select-label">
-                                    {t("common.basic.interfaceLanguage")}
-                                  </InputLabel>
-                                  <Select
-                                    labelId="interface-language-select-label"
-                                    label={t("common.basic.interfaceLanguage")}
-                                    value={this.state.config.new_data?.locale}
-                                    onChange={(event: SelectChangeEvent) =>
-                                      this.updateConfig({
-                                        locale: event.target.value,
-                                      })
-                                    }
-                                  >
-                                    <MenuItem value={"ru"}>
-                                      {t("meta:languages.ru")}
-                                    </MenuItem>
-                                    <MenuItem value={"en"}>
-                                      {t("meta:languages.en-US")}
-                                    </MenuItem>
-                                  </Select>
-                                </FormControl>
-                              </Grid>
-                              <Grid item xs={12} md={6}>
-                                <FormControl fullWidth>
-                                  <InputLabel id="commands-language-select-label">
-                                    {t("common.basic.commandLanguage")}
-                                  </InputLabel>
-                                  <Select
-                                    labelId="commands-language-select-label"
-                                    label={t("common.basic.commandLanguage")}
-                                    onChange={(event: SelectChangeEvent) =>
-                                      this.updateConfig({
-                                        command_locale: event.target.value,
-                                      })
-                                    }
-                                    value={
-                                      this.state.config.new_data?.command_locale
-                                    }
-                                  >
-                                    <MenuItem value={"ru"}>
-                                      {t("meta:languages.ru")}
-                                    </MenuItem>
-                                    <MenuItem value={"en"}>
-                                      {t("meta:languages.en-US")}
-                                    </MenuItem>
-                                  </Select>
-                                </FormControl>
-                              </Grid>
-                              <Grid item xs={12}>
-                                <FormControl fullWidth sx={{ maxHeight: 120 }}>
-                                  <InputLabel id="commands-language-select-label">
-                                    {t("common.basic.timezone")}
-                                  </InputLabel>
-                                  <Select
-                                    labelId="commands-language-select-label"
-                                    label={t("common.basic.timezone")}
-                                    value={this.state.config.new_data?.timezone}
-                                    onChange={(event: SelectChangeEvent) =>
-                                      this.updateConfig({
-                                        timezone: event.target.value,
-                                      })
-                                    }
-                                    MenuProps={{
-                                      PaperProps: {
-                                        sx: { maxHeight: "200px" },
-                                      },
+                    <Collapse in={this.state.errored}>
+                      <Alert
+                        severity="error"
+                        sx={{ mb: "12px" }}
+                        variant="outlined"
+                      >
+                        {t(`errors.${this.state.error}`)}
+                      </Alert>
+                    </Collapse>
+                    <Box>
+                      <Switch>
+                        <Redirect
+                          from={`/dashboard/:guild/`}
+                          exact
+                          to={`/dashboard/:guild/common`}
+                        />
+                        <Route path={`${this.props.match.url}/common`} exact>
+                          <Accordion defaultExpanded elevation={4}>
+                            <AccordionSummary expandIcon={<ExpandMore />}>
+                              <Typography>{t("common.basic.title")}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                  <TextField
+                                    label={t("common.basic.prefix")}
+                                    value={this.state.config.new_data?.prefix}
+                                    variant="outlined"
+                                    fullWidth
+                                    inputProps={{
+                                      maxLength: 5,
                                     }}
+                                    onChange={(event) =>
+                                      this.updateConfig({
+                                        prefix: event.target.value,
+                                      })
+                                    }
+                                  />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                  <FormControl fullWidth>
+                                    <InputLabel id="interface-language-select-label">
+                                      {t("common.basic.interfaceLanguage")}
+                                    </InputLabel>
+                                    <Select
+                                      labelId="interface-language-select-label"
+                                      label={t(
+                                        "common.basic.interfaceLanguage"
+                                      )}
+                                      value={this.state.config.new_data?.locale}
+                                      onChange={(event: SelectChangeEvent) =>
+                                        this.updateConfig({
+                                          locale: event.target.value,
+                                        })
+                                      }
+                                    >
+                                      <MenuItem value={"ru"}>
+                                        {t("meta:languages.ru")}
+                                      </MenuItem>
+                                      <MenuItem value={"en"}>
+                                        {t("meta:languages.en")}
+                                      </MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                  <FormControl fullWidth>
+                                    <InputLabel id="commands-language-select-label">
+                                      {t("common.basic.commandLanguage")}
+                                    </InputLabel>
+                                    <Select
+                                      labelId="commands-language-select-label"
+                                      label={t("common.basic.commandLanguage")}
+                                      onChange={(event: SelectChangeEvent) =>
+                                        this.updateConfig({
+                                          command_locale: event.target.value,
+                                        })
+                                      }
+                                      value={
+                                        this.state.config.new_data
+                                          ?.command_locale
+                                      }
+                                    >
+                                      <MenuItem value={"ru"}>
+                                        {t("meta:languages.ru")}
+                                      </MenuItem>
+                                      <MenuItem value={"en"}>
+                                        {t("meta:languages.en")}
+                                      </MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                  <FormControl
+                                    fullWidth
+                                    sx={{ maxHeight: 120 }}
                                   >
-                                    {this.state.timezones
-                                      ?.sort((a, b) =>
-                                        Number(a.offset > b.offset)
-                                      )
-                                      .map(({ name, value }) => (
-                                        <MenuItem key={value} value={value}>
-                                          {name}
-                                        </MenuItem>
-                                      ))}
-                                  </Select>
-                                </FormControl>
+                                    <InputLabel id="commands-language-select-label">
+                                      {t("common.basic.timezone")}
+                                    </InputLabel>
+                                    <Select
+                                      labelId="commands-language-select-label"
+                                      label={t("common.basic.timezone")}
+                                      value={
+                                        this.state.config.new_data?.timezone
+                                      }
+                                      onChange={(event: SelectChangeEvent) =>
+                                        this.updateConfig({
+                                          timezone: event.target.value,
+                                        })
+                                      }
+                                      MenuProps={{
+                                        PaperProps: {
+                                          sx: { maxHeight: "200px" },
+                                        },
+                                      }}
+                                    >
+                                      {this.state.timezones
+                                        ?.sort((a, b) =>
+                                          Number(a.offset > b.offset)
+                                        )
+                                        .map(({ name, value }) => (
+                                          <MenuItem key={value} value={value}>
+                                            {name}
+                                          </MenuItem>
+                                        ))}
+                                    </Select>
+                                  </FormControl>
+                                </Grid>
                               </Grid>
-                            </Grid>
-                          </AccordionDetails>
-                        </Accordion>
-                      </Route>
-                      <Route path={`${this.props.match.url}/audit`} exact>
-                        xd
-                      </Route>
-                    </Switch>
+                            </AccordionDetails>
+                          </Accordion>
+                        </Route>
+                        <Route path={`${this.props.match.url}/audit`} exact>
+                          xd
+                        </Route>
+                      </Switch>
+                    </Box>
                   </Box>
                   <ThemeProvider
                     theme={theme.palette.mode === "dark" ? light : dark}
@@ -339,9 +381,10 @@ class DashboardBase extends Component<Props, State> {
                         <Button
                           color={"inherit"}
                           size="small"
-                          onClick={() =>
-                            this.updateConfig(this.state.config.old_data)
-                          }
+                          onClick={() => {
+                            this.updateConfig(this.state.config.old_data);
+                            this.setState({ errored: false });
+                          }}
                           disabled={this.state.savingNow}
                         >
                           {t("snackbar.save.reset")}
@@ -392,10 +435,24 @@ class DashboardBase extends Component<Props, State> {
             old_data: this.state.config.new_data,
             new_data: this.state.config.new_data,
           },
-          savingNow: false,
+          errored: false,
         });
       })
-      .catch(() => this.setState({ savingNow: false }));
+      .catch((error: AxiosError) => {
+        const data = error.response?.data;
+        if (data.name === "JsonSchemaValidationError") {
+          this.setState({
+            error: data.validationErrors.body[0].schemaPath,
+            errored: true,
+          });
+        } else {
+          this.setState({
+            errored: true,
+            error: "unknown",
+          });
+        }
+      })
+      .then(() => this.setState({ savingNow: false }));
   }
 }
 

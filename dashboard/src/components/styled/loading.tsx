@@ -1,5 +1,5 @@
-import { Component, ReactNode } from "react";
 import { LinearProgress } from "@mui/material";
+import { Component, ReactNode } from "react";
 
 export class Loading extends Component<{
   value: any;

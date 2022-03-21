@@ -1,11 +1,11 @@
-import { RouteGroup } from "../interface";
+import DiscordOAuth2 from "discord-oauth2";
 import { Request, Response, Router } from "express";
+import { sign } from "jsonwebtoken";
 import passport from "passport";
 import config from "../config";
-import { sign } from "jsonwebtoken";
+import { RouteGroup } from "../interface";
 import { AuthProfile } from "../middlewares/auth.middleware";
 import Server from "../server";
-import DiscordOAuth2 from "discord-oauth2";
 
 export default class implements RouteGroup {
   readonly router: Router = Router();
@@ -23,8 +23,14 @@ export default class implements RouteGroup {
       "/callback",
       passport.authenticate("discord", { failureRedirect: "/auth/" }),
       (req: Request, res: Response) => {
-        const link = new URL('/callback', config.frontendURI);
-        link.searchParams.append('token', sign({ accessToken: (req.user as AuthProfile).accessToken }, config.session.secret as string));
+        const link = new URL("/callback", config.frontendURI);
+        link.searchParams.append(
+          "token",
+          sign(
+            { accessToken: (req.user as AuthProfile).accessToken },
+            config.session.secret as string
+          )
+        );
         res.redirect(link.toString());
       }
     );

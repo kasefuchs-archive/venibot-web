@@ -1,6 +1,6 @@
 import { Component, ReactNode } from "react";
-import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
+import { withRouter } from "react-router-dom";
 
 class CallbackBase extends Component<RouteComponentProps> {
   componentDidMount() {

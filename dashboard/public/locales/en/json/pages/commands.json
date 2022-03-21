@@ -1,0 +1,19 @@
+{
+  "title": "Commands",
+  "groups": {
+    "all": "All",
+    "utility": "Utility",
+    "fun": "Fun"
+  },
+  "help": {
+    "title": "Commands Help",
+    "defaultPrefix": "Standard prefix",
+    "syntax": "Syntax",
+    "optional": "Optional parameter",
+    "required": "Required parameter"
+  },
+  "commands": {
+    "usage": "Usage:",
+    "examples": "Examples:"
+  }
+}

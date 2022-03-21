@@ -1,80 +1,99 @@
-{
-  "ru": [
-    {
-      "name": "цитата",
-      "description": "Вывод случайного сообщения из закреплённых",
-      "type": 1,
-      "key": "stock.command.citation",
-      "group": "utility"
+[
+  {
+    "name": {
+      "ru": "цитата",
+      "en": "citation"
     },
-    {
-      "name": "погода",
-      "description": "Просмотр погоды в определённом городе",
-      "type": 1,
-      "key": "stock.command.weather",
-      "options": [
-        {
-          "name": "city",
-          "description": "Город, в котором вы хотите посмотреть погоду",
-          "type": 3,
-          "required": true
-        }
-      ],
-      "group": "utility"
+    "description": {
+      "ru": "Вывод случайного сообщения из закреплённых",
+      "en": "Output of a random message from pinned"
     },
-    {
-      "name": "гугл",
-      "description": "Получить ссылку для поиска в Google",
-      "type": 1,
-      "key": "stock.command.google",
-      "options": [
-        {
-          "name": "query",
-          "description": "Поисковый запрос",
-          "type": 3,
-          "required": true
-        }
-      ],
-      "group": "utility"
-    }
-  ],
-  "en": [
-    {
-      "name": "citation",
-      "description": "Output of a random message from pinned",
-      "type": 1,
-      "key": "stock.command.citation",
-      "group": "utility"
+    "fullDescription": {
+      "en": "Returns a random message from pinned in this channel",
+      "ru": "Возвращает произвольное сообщение из закреплённых в этом канале"
     },
-    {
-      "name": "weather",
-      "description": "Check the weather in the city",
-      "type": 1,
-      "key": "stock.command.weather",
-      "options": [
-        {
-          "name": "city",
-          "description": "The city where yo want to check the weather",
-          "type": 3,
-          "required": true
-        }
-      ],
-      "group": "utility"
+    "usage": {
+      "ru": "цитата",
+      "en": "citation"
     },
-    {
-      "name": "google",
-      "description": "Get a Google search link",
-      "type": 1,
-      "key": "stock.command.google",
-      "options": [
-        {
-          "name": "query",
-          "description": "Your search query",
-          "type": 3,
-          "required": true
-        }
-      ],
-      "group": "utility"
-    }
-  ]
-}
+    "type": 1,
+    "key": "stock.command.citation",
+    "group": "fun"
+  },
+  {
+    "name": {
+      "ru": "погода",
+      "en": "weather"
+    },
+    "description": {
+      "ru": "Просмотр погоды в определённом городе",
+      "en": "Check the weather in the city"
+    },
+    "fullDescription": {
+      "ru": "Показывает погоду в определённом городе: температуру, влажность, давление и скорость воздуха",
+      "en": "Shows the weather in a particular city: temperature, humidity, pressure and air speed"
+    },
+    "type": 1,
+    "key": "stock.command.weather",
+    "usage": {
+      "ru": "погода <город>",
+      "en": "weather <city>"
+    },
+    "examples": [
+      {
+        "ru": "погода Амстердам",
+        "en": "weather Amsterdam"
+      }
+    ],
+    "options": [
+      {
+        "name": "city",
+        "description": {
+          "ru": "Город, в котором вы хотите посмотреть погоду",
+          "en": "The city where you want to check the weather"
+        },
+        "type": 3,
+        "required": true
+      }
+    ],
+    "group": "utility"
+  },
+  {
+    "name": {
+      "ru": "гугл",
+      "en": "google"
+    },
+    "description": {
+      "ru": "Получить ссылку для поиска в Google",
+      "en": "Get a Google search link"
+    },
+    "fullDescription": {
+      "ru": "Возвращаёт ссылку для поиска в Google",
+      "en": "Returns a Google search link"
+    },
+    "type": 1,
+    "usage": {
+      "ru": "гугл <запрос>",
+      "en": "google <query>"
+    },
+    "examples": [
+      {
+        "ru": "гугл где мне купить чулки?",
+        "en": "google where can i buy stockings?"
+      }
+    ],
+    "key": "stock.command.google",
+    "options": [
+      {
+        "name": "query",
+        "description": {
+          "ru": "Поисковый запрос",
+          "en": "Your search query"
+        },
+        "type": 3,
+        "required": true
+      }
+    ],
+    "group": "utility"
+  }
+]

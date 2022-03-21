@@ -1,9 +1,9 @@
-import { Component, ReactNode } from "react";
-import { Layout, Loading } from "../components";
-import axios, { AxiosError } from "axios";
 import { Box, Container, Link, Typography } from "@mui/material";
+import axios, { AxiosError } from "axios";
 import ReactMarkdown from "markdown-to-jsx";
+import { Component, ReactNode } from "react";
 import { TransProps, withTranslation } from "react-i18next";
+import { Layout, Loading } from "../components";
 
 interface State {
   file?: string;
@@ -103,8 +103,7 @@ class MarkdownRenderer extends Component<Props, State> {
       .get(`/locales/${locale}/markdown/${this.props.file}.md`)
       .then(({ data }) => this.setState({ file: data }))
       .catch((e: AxiosError) => {
-        if (e.response?.status === 404)
-          this.props.i18n?.changeLanguage("en-US");
+        if (e.response?.status === 404) this.props.i18n?.changeLanguage("en");
       });
   }
 

@@ -1,6 +1,6 @@
 import { Theme } from "@mui/material";
-import { Themes } from "../components/layout";
 import { createContext } from "react";
+import { Themes } from "../components/layout";
 
 export interface ThemeContextOptions {
   theme: Theme;

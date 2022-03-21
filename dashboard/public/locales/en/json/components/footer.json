@@ -4,6 +4,8 @@
   "cookies": "Cookie Notice",
   "supportServer": "Support Server",
   "docs": "Documentation",
+  "commands": "Commands",
+  "donate": "Donate",
   "copyright": "© 2020-{{year}} — dmemsm & Kasefuchs | All right received",
   "editLocale": "Change language"
 }

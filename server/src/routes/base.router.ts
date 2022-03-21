@@ -1,6 +1,6 @@
-import { RouteGroup } from "../interface";
 import { Router } from "express";
 import base from "../controllers/base";
+import { RouteGroup } from "../interface";
 import Server from "../server";
 
 export default class implements RouteGroup {

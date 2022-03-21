@@ -1,3 +1,4 @@
+import { Build, Queue } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -8,16 +9,15 @@ import {
   Grid,
   Paper,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
-import React, { Component, ReactNode } from "react";
-import { Layout, Loading } from "../components";
-import { Build, Queue } from "@mui/icons-material";
-import { Server } from "../interfaces";
-import { AuthContext } from "../context";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { Component, ReactNode } from "react";
 import { TransProps, withTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Layout, Loading } from "../components";
+import { AuthContext } from "../context";
+import { Server } from "../interfaces";
 
 interface State {
   servers: Array<Server> | null;
@@ -52,8 +52,7 @@ class ServersBase extends Component<TransProps<any>, State> {
             );
         }
       }, 1000);
-    }
-    else throw new Error('Forbidden');
+    } else throw new Error("Forbidden");
   }
 
   render(): ReactNode {

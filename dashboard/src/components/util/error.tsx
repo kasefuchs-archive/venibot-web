@@ -1,10 +1,7 @@
 import { Home } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import React, { Component, ReactNode } from "react";
-import {
-  TransProps,
-  withTranslation,
-} from "react-i18next";
+import { TransProps, withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Layout } from "../layout";
 

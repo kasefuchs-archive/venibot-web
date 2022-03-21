@@ -1,7 +1,7 @@
 import {
-  SnackbarProps,
   Snackbar as MuiSnackbar,
-  ThemeProvider,
+  SnackbarProps,
+  ThemeProvider
 } from "@mui/material";
 import { Component, ReactNode } from "react";
 import { ThemeContext } from "../../context";
@@ -21,7 +21,9 @@ export class Snackbar extends Component<Props> {
               anchorOrigin={this.props.anchorOrigin}
               sx={this.props.sx}
               action={
-                <ThemeProvider theme={theme}>{this.props.children}</ThemeProvider>
+                <ThemeProvider theme={theme}>
+                  {this.props.children}
+                </ThemeProvider>
               }
             />
           </ThemeProvider>
