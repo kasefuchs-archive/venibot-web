@@ -126,7 +126,9 @@ class StartBase extends Component<TransProps<any>, State> {
                   <Grid item>
                     <Button
                       variant="contained"
-                      href={`${process.env.REACT_APP_API_URL}/auth/add`}
+                      href={
+                        new URL("/auth/add", process.env.REACT_APP_API_URL).href
+                      }
                       startIcon={<FontAwesomeIcon icon={faDiscord} />}
                     >
                       {t("buttons.add")}
@@ -319,7 +321,9 @@ class StartBase extends Component<TransProps<any>, State> {
               >
                 <Button
                   variant="contained"
-                  href={`${process.env.REACT_APP_API_URL}/auth/add`}
+                  href={
+                    new URL("/auth/add", process.env.REACT_APP_API_URL).href
+                  }
                   startIcon={<FontAwesomeIcon icon={faDiscord} />}
                 >
                   {t("buttons.add")}
