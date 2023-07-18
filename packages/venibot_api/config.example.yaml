@@ -1,0 +1,6 @@
+# Configuration for the HTTP server
+server:
+  # The IP address the server will bind to
+  address: 127.0.0.1
+  # The port number the server will listen on
+  port: 8080

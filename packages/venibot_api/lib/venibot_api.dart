@@ -1,3 +1,2 @@
-int calculate() {
-  return 6 * 7;
-}
+export 'src/model/configuration/application.dart';
+export 'src/structure/application.dart';

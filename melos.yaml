@@ -6,3 +6,22 @@ packages:
 ide:
   intellij:
     moduleNamePrefix: ''
+
+scripts:
+  build_runner:build:
+    run: | 
+      melos exec -c 5 -- \ 
+        "dart run build_runner build --delete-conflicting-outputs"
+    description: Run a build_runner build
+    packageFilters:
+      scope:
+        - venibot_api
+
+  build_runner:watch:
+    run: |
+      melos exec -c 5 -- \ 
+        "dart run build_runner watch --delete-conflicting-outputs"
+    description: Run a build_runner watch
+    packageFilters:
+      scope:
+        - venibot_api
