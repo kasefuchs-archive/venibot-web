@@ -1,0 +1,4 @@
+name: venibot_web
+
+packages:
+  - packages/*
