@@ -2,3 +2,7 @@ name: venibot_web
 
 packages:
   - packages/*
+
+ide:
+  intellij:
+    moduleNamePrefix: ''
